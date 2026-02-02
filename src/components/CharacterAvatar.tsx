@@ -39,27 +39,27 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
       case 'error':
         return {
           filter: 'hue-rotate(0deg) saturate(1.5)',
-          boxShadow: `0 0 30px var(--avatar-error-glow)`,
+          boxShadow: `0 0 var(--avatar-glow-spread) var(--avatar-error-glow)`,
         };
       case 'listening':
         return {
           filter: 'brightness(1.1)',
-          boxShadow: `0 0 30px var(--avatar-listening-glow)`,
+          boxShadow: `0 0 var(--avatar-glow-spread) var(--avatar-listening-glow)`,
         };
       case 'speaking':
         return {
           filter: 'brightness(1.15)',
-          boxShadow: `0 0 40px var(--avatar-speaking-glow)`,
+          boxShadow: `0 0 var(--avatar-glow-spread-large) var(--avatar-speaking-glow)`,
         };
       case 'processing':
         return {
           filter: 'brightness(1.05)',
-          boxShadow: `0 0 25px var(--avatar-processing-glow)`,
+          boxShadow: `0 0 var(--avatar-glow-spread) var(--avatar-processing-glow)`,
         };
       default:
         return {
           filter: 'brightness(1)',
-          boxShadow: `0 0 20px var(--avatar-idle-glow)`,
+          boxShadow: `0 0 var(--avatar-glow-spread) var(--avatar-idle-glow)`,
         };
     }
   };

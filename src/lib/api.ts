@@ -83,6 +83,16 @@ export const createVoiceSession = async (config: VoiceSessionConfig): Promise<Vo
     const response = await api.post('/voice/session', config);
     return response.data;
   } catch (error: any) {
+    // Network error: backend unreachable (not running, wrong URL, or CORS)
+    const isNetworkError =
+      !error.response &&
+      (error.message === 'Network Error' || error.code === 'ERR_NETWORK');
+    if (isNetworkError) {
+      const hint = typeof window !== 'undefined'
+        ? 'Cannot reach the API. The service may be unavailable or slow to wake (e.g. Render). Check NEXT_PUBLIC_API_URL and try again.'
+        : 'Backend unreachable (network error).';
+      throw Object.assign(new Error(hint), { code: 'NETWORK_ERROR', original: error });
+    }
     // Re-throw with more context for better error handling
     if (error.response) {
       throw {

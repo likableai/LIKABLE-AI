@@ -494,6 +494,11 @@ export const useVoiceCompanion = (options: UseVoiceCompanionOptions = {}): UseVo
       console.error('Error starting session:', err);
       updateState('error');
       
+      // Network error: backend unreachable
+      if (err.code === 'NETWORK_ERROR' || (err.message && err.message.includes('Cannot reach the API'))) {
+        onError?.(err.message || 'Cannot reach the API. The service may be unavailable or slow to wake. Try again.');
+        return;
+      }
       // Handle specific error cases
       if (err.response?.status === 503) {
         const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Voice service not configured';
@@ -502,7 +507,7 @@ export const useVoiceCompanion = (options: UseVoiceCompanionOptions = {}): UseVo
         const errorMessage = err.response?.data?.error || 'Insufficient tokens';
         onError?.(errorMessage);
       } else {
-        const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Failed to start voice session';
+        const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to start voice session';
         onError?.(errorMessage);
       }
     }

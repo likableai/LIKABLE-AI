@@ -129,15 +129,17 @@ export const CompanionInterface: React.FC = () => {
     >
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-full">
         {/* Header - Wallet UI in top right */}
-        <header 
-          className="flex items-center justify-end gap-3 p-4 flex-shrink-0"
-          style={{ 
+        <header
+          className="flex items-center justify-end flex-shrink-0"
+          style={{
             zIndex: 'var(--z-header)',
+            padding: 'var(--space-4)',
+            gap: 'var(--space-3)',
             backgroundColor: 'var(--bg)',
-            borderBottom: '1px solid var(--border-opacity-10)'
+            borderBottom: '1px solid var(--border-opacity-10)',
           }}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
             <TokenBalance />
             <WalletButton />
           </div>
@@ -153,17 +155,16 @@ export const CompanionInterface: React.FC = () => {
             : 'flex-col items-center justify-center' // Centered view initially
         }`}>
           {/* Left Section - Voice Control */}
-          <div 
-            className={`flex-1 flex flex-col items-center justify-center p-8 lg:p-12 transition-all duration-500 ${
-              hasConversationStarted 
-                ? 'border-b lg:border-b-0 lg:border-r' 
-                : ''
+          <div
+            className={`flex-1 flex flex-col items-center justify-center transition-all duration-500 ${
+              hasConversationStarted ? 'border-b lg:border-b-0 lg:border-r' : ''
             }`}
-            style={{ 
-              borderColor: hasConversationStarted ? 'var(--border-opacity-10)' : 'transparent'
+            style={{
+              padding: 'var(--space-8)',
+              borderColor: hasConversationStarted ? 'var(--border-opacity-10)' : 'transparent',
             }}
           >
-            <div className="w-full max-w-md space-y-8">
+            <div className="w-full max-w-md flex flex-col" style={{ gap: 'var(--space-8)' }}>
               {/* Voice Visualization */}
               <VoiceVisualization
                 mode={visualizationMode}
@@ -180,43 +181,43 @@ export const CompanionInterface: React.FC = () => {
                   <button
                     onClick={handleVoiceToggle}
                     disabled={state === 'connecting' || state === 'error'}
-                    className={`w-full rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-primary btn-md ${
+                    className={`w-full rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center btn-primary btn-md ${
                       isListening ? 'btn-danger' : ''
                     }`}
-                    style={{ 
-                      fontFamily: "'Times New Roman', Times, serif", 
+                    style={{
+                      gap: 'var(--space-2)',
                       fontSize: 'var(--font-base)',
-                      boxShadow: isListening ? 'none' : 'var(--shadow-white-sm)'
+                      boxShadow: isListening ? 'none' : 'var(--shadow-white-sm)',
                     }}
                   >
                     {state === 'connecting' && 'Connecting...'}
                     {state === 'idle' && isConnected && (
                       <>
-                        <Radio className="w-5 h-5" />
+                        <Radio style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
                         <span>Start Talking</span>
                       </>
                     )}
                     {state === 'idle' && !isConnected && (
                       <>
-                        <Radio className="w-5 h-5" />
+                        <Radio style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
                         <span>Connect Voice</span>
                       </>
                     )}
                     {isListening && (
                       <>
-                        <Square className="w-5 h-5" />
+                        <Square style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
                         <span>Stop Listening</span>
                       </>
                     )}
                     {state === 'processing' && (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
                         <span>Processing...</span>
                       </>
                     )}
                     {state === 'speaking' && (
                       <>
-                        <Radio className="w-5 h-5 animate-pulse" />
+                        <Radio className="animate-pulse" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
                         <span>Speaking...</span>
                       </>
                     )}
@@ -227,29 +228,20 @@ export const CompanionInterface: React.FC = () => {
                     <button
                       onClick={closeSession}
                       className="w-full btn-secondary"
-                      style={{ 
-                        fontFamily: "'Times New Roman', Times, serif", 
-                        fontSize: 'var(--font-sm)'
-                      }}
+                      style={{ fontSize: 'var(--font-sm)' }}
                       aria-label="Disconnect voice session"
                     >
-                      <Square className="w-4 h-4" />
+                      <Square style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
                       <span>Disconnect</span>
                     </button>
                   )}
                 </div>
               ) : (
-                <div 
-                  className="p-6 rounded-xl text-center card"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
+                <div
+                  className="card text-center"
+                  style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)' }}
                 >
-                  <p 
-                    className="text-sm"
-                    style={{ 
-                      fontFamily: "'Times New Roman', Times, serif",
-                      color: 'var(--text)'
-                    }}
-                  >
+                  <p className="page-subtitle text-sm">
                     Connect your wallet to start using the voice companion
                   </p>
                 </div>

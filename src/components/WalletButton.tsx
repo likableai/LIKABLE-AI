@@ -30,7 +30,7 @@ export const WalletButton: React.FC = () => {
         background: var(--accent-primary) !important;
         border: none !important;
         color: var(--bg) !important;
-        border-radius: 9999px !important;
+        border-radius: var(--radius-full) !important;
         padding: var(--space-1) var(--space-3) !important;
         font-family: 'Times New Roman', Times, serif !important;
         font-size: var(--font-sm) !important;
@@ -47,9 +47,9 @@ export const WalletButton: React.FC = () => {
       }
       .wallet-adapter-button-start-icon,
       .wallet-adapter-button-end-icon {
-        width: 14px !important;
-        height: 14px !important;
-        margin-right: 4px !important;
+        width: var(--font-sm) !important;
+        height: var(--font-sm) !important;
+        margin-right: var(--space-1) !important;
       }
       .wallet-adapter-button:hover:not([disabled]) {
         background: var(--accent-secondary) !important;

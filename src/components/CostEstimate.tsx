@@ -41,16 +41,36 @@ export const CostEstimate: React.FC<CostEstimateProps> = ({ requestType }) => {
 
   if (loading || !cost) {
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 border rounded text-xs opacity-50">
-        <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      <div
+        className="inline-flex items-center rounded text-muted border border-opacity-10"
+        style={{
+          gap: 'var(--space-2)',
+          padding: 'var(--space-1-5) var(--space-3)',
+          fontSize: 'var(--font-xs)',
+          borderColor: 'var(--border-opacity-10)',
+        }}
+      >
+        <div
+          className="border-2 border-current border-t-transparent rounded-full animate-spin"
+          style={{ width: 'var(--icon-sm)', height: 'var(--icon-sm)' }}
+        />
         <span>Calculating...</span>
       </div>
     );
   }
 
   return (
-    <div className="inline-flex items-center gap-2 px-3 py-1.5 border rounded text-xs opacity-70">
-      <DollarSign className="w-3.5 h-3.5" />
+    <div
+      className="inline-flex items-center rounded text-muted border"
+      style={{
+        gap: 'var(--space-2)',
+        padding: 'var(--space-1-5) var(--space-3)',
+        fontSize: 'var(--font-xs)',
+        opacity: 0.9,
+        borderColor: 'var(--border-opacity-10)',
+      }}
+    >
+      <DollarSign style={{ width: 'var(--font-sm)', height: 'var(--font-sm)' }} />
       <span>Cost: {cost.costTokens.toFixed(4)} tokens ≈ ${cost.costUsd.toFixed(4)}</span>
     </div>
   );

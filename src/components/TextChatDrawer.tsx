@@ -135,54 +135,29 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
           zIndex: 'var(--z-drawer)'
         }}
       >
-        {/* Header */}
-        <div 
-          className="flex items-center justify-between p-4 border-b"
-          style={{ borderColor: 'var(--border-opacity-5)' }}
+        <div
+          className="flex items-center justify-between border-b"
+          style={{ padding: 'var(--space-4)', borderColor: 'var(--border-opacity-5)' }}
         >
-          <h2 
-            className="text-xl font-normal"
-            style={{ 
-              fontFamily: "'Times New Roman', Times, serif",
-              color: 'var(--text)'
-            }}
-          >
-            Text Chat
-          </h2>
+          <h2 className="page-title text-xl">Text Chat</h2>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded transition-colors"
-            style={{ 
-              color: 'var(--text)',
-              backgroundColor: 'transparent'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-hover)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            className="nav-link rounded-lg p-1.5"
+            style={{ padding: 'var(--space-1-5)' }}
             aria-label="Close chat"
           >
-            <X className="w-5 h-5" />
+            <X style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
           </button>
         </div>
 
-        {/* Messages */}
-        <div 
-          className="flex-1 overflow-y-auto px-4 py-4 space-y-4" 
-          style={{ 
-            height: 'calc(100% - 160px)',
-            maxHeight: '100%'
-          }}
+        <div
+          className="flex-1 overflow-y-auto drawer-body"
+          style={{ padding: 'var(--space-4)', gap: 'var(--space-4)' }}
         >
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p 
-                className="text-sm"
-                style={{ 
-                  fontFamily: "'Times New Roman', Times, serif",
-                  color: 'var(--text-opacity-60)'
-                }}
-              >
-                Begin a conversation with Likable AI
-              </p>
+            <div className="flex flex-col items-center justify-center text-center" style={{ padding: 'var(--space-16) 0' }}>
+              <p className="page-subtitle text-sm">Begin a conversation with Likable AI</p>
             </div>
           )}
 
@@ -192,30 +167,18 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
               className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
             >
               <div
-                className={`rounded-2xl ${
-                  msg.role === 'user'
-                    ? ''
-                    : 'card'
-                }`}
-                style={{ 
-                  fontFamily: "'Times New Roman', Times, serif",
+                className={msg.role === 'user' ? '' : 'card'}
+                style={{
+                  borderRadius: 'var(--radius-2xl)',
                   backgroundColor: msg.role === 'user' ? 'var(--accent-primary)' : undefined,
                   color: msg.role === 'user' ? 'var(--bg)' : 'var(--text)',
                   padding: msg.role === 'user' ? 'var(--space-2-5) var(--space-4)' : undefined,
-                  maxWidth: 'var(--max-width-message)'
+                  maxWidth: 'var(--max-width-message)',
                 }}
               >
-                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                  {msg.content}
-                </p>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
               </div>
-              <span
-                className="text-xs mt-1 px-1"
-                style={{ 
-                  fontFamily: "'Times New Roman', Times, serif",
-                  color: 'var(--text-opacity-50)'
-                }}
-              >
+              <span className="text-muted text-xs mt-1 px-1">
                 {new Date(msg.timestamp).toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',
@@ -226,7 +189,7 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
 
           {loading && (
             <div className="flex items-start">
-              <div className="card px-4 py-2.5 rounded-2xl">
+              <div className="card rounded-2xl" style={{ padding: 'var(--space-2-5) var(--space-4)', borderRadius: 'var(--radius-2xl)' }}>
                 <SkeletonLoader lines={2} />
               </div>
             </div>

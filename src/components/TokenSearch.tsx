@@ -41,54 +41,57 @@ const TokenSearch: React.FC = () => {
   };
 
   return (
-    <div 
-      className="w-full max-w-4xl mx-auto p-4 md:p-5 rounded-2xl transition-all duration-200"
+    <div
+      className="w-full mx-auto transition-all duration-200 card-elevated"
       style={{
-        background: 'var(--bg-elevated)',
-        border: '1px solid var(--border-opacity-10)',
-        boxShadow: 'var(--shadow-md)',
+        maxWidth: 'var(--content-max-width)',
+        padding: 'var(--space-4)',
+        borderRadius: 'var(--radius-2xl)',
       }}
     >
-      {/* Header removed here; page provides heading */}
-
-      <form onSubmit={handleSearch} className="relative mb-8 group">
+      <form onSubmit={handleSearch} className="relative group" style={{ marginBottom: 'var(--space-8)' }}>
         <input
           ref={inputRef}
           type="text"
           placeholder="Search by name, symbol, or mint address..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full px-5 py-3 rounded-2xl transition-all duration-200 outline-none"
+          className="input w-full outline-none transition-all duration-200"
           style={{
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--text)',
-            fontSize: '1rem',
+            padding: 'var(--space-3) var(--space-5)',
+            borderRadius: 'var(--radius-2xl)',
+            fontSize: 'var(--font-base)',
           }}
         />
       </form>
 
       {error && (
-        <div 
-          className="p-4 mb-6 rounded-2xl flex items-center gap-3"
+        <div
+          className="flex items-center rounded-2xl"
           style={{
+            padding: 'var(--space-4)',
+            marginBottom: 'var(--space-6)',
+            gap: 'var(--space-3)',
+            borderRadius: 'var(--radius-2xl)',
             background: 'var(--color-error-bg)',
             border: '1px solid var(--color-error)',
             color: 'var(--color-error)',
           }}
         >
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-          <p className="text-sm font-medium">{error}</p>
+          <AlertCircle className="flex-shrink-0" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
+          <p className="section-title text-sm">{error}</p>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--space-3)' }}>
         {results.length > 0 ? (
           results.map((token) => (
-            <div 
+            <div
               key={token.mint}
-              className="p-4 rounded-2xl transition-all duration-200 group cursor-pointer"
+              className="card-hover rounded-2xl transition-all duration-200 group cursor-pointer"
               style={{
+                padding: 'var(--space-4)',
+                borderRadius: 'var(--radius-2xl)',
                 background: 'var(--bg-elevated)',
                 border: '1px solid var(--border-subtle)',
               }}
@@ -103,13 +106,16 @@ const TokenSearch: React.FC = () => {
                 e.currentTarget.style.background = 'var(--bg-elevated)';
               }}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center" style={{ gap: 'var(--space-4)' }}>
                 {token.logoURI ? (
-                  <img src={token.logoURI} alt={token.symbol} className="w-12 h-12 rounded-xl shadow-sm flex-shrink-0" />
+                  <img src={token.logoURI} alt={token.symbol} className="rounded-xl shadow-sm flex-shrink-0" style={{ width: 'var(--space-12)', height: 'var(--space-12)' }} />
                 ) : (
-                  <div 
-                    className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0"
+                  <div
+                    className="rounded-xl flex items-center justify-center font-bold flex-shrink-0"
                     style={{
+                      width: 'var(--space-12)',
+                      height: 'var(--space-12)',
+                      fontSize: 'var(--font-lg)',
                       background: 'var(--bg-hover)',
                       color: 'var(--accent-primary)',
                       border: '1px solid var(--border-subtle)',
@@ -119,11 +125,13 @@ const TokenSearch: React.FC = () => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold truncate" style={{ color: 'var(--text)' }}>{token.name}</h3>
-                    <span 
-                      className="text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider flex-shrink-0"
+                  <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+                    <h3 className="section-title font-bold truncate">{token.name}</h3>
+                    <span
+                      className="rounded-md font-bold uppercase tracking-wider flex-shrink-0"
                       style={{
+                        padding: 'var(--space-1) var(--space-1-5)',
+                        fontSize: 'var(--font-xs)',
                         background: 'var(--bg-hover)',
                         color: 'var(--accent-secondary)',
                         border: '1px solid var(--border-subtle)',
@@ -132,14 +140,12 @@ const TokenSearch: React.FC = () => {
                       {token.symbol}
                     </span>
                   </div>
-                  <p className="text-[10px] opacity-40 truncate font-mono mt-1" style={{ color: 'var(--text-secondary)' }}>
-                    {token.mint}
-                  </p>
+                  <p className="text-muted text-xs truncate font-mono mt-1">{token.mint}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" style={{ color: 'var(--accent-primary)' }} />
+                <ChevronRight className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 text-accent" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-3 text-[11px] opacity-70" style={{ color: 'var(--text-secondary)' }}>
+              <div className="flex flex-wrap text-muted mt-4" style={{ gap: 'var(--space-3)', fontSize: 'var(--font-xs)' }}>
                 <span>
                   Score:{' '}
                   <strong style={{ color: 'var(--text)' }}>
@@ -156,13 +162,13 @@ const TokenSearch: React.FC = () => {
             </div>
           ))
         ) : !loading && query ? (
-          <div className="col-span-full py-12 text-center">
-            <p className="text-base opacity-40" style={{ color: 'var(--text-secondary)' }}>No tokens found for "{query}"</p>
+          <div className="col-span-full text-center" style={{ padding: 'var(--space-12) 0' }}>
+            <p className="page-subtitle">No tokens found for &quot;{query}&quot;</p>
           </div>
         ) : (
-          <div className="col-span-full py-12 text-center opacity-20">
-            <Search className="w-16 h-16 mx-auto mb-4" />
-            <p className="text-sm">Enter a search query to explore Solana tokens</p>
+          <div className="col-span-full text-center text-muted" style={{ padding: 'var(--space-12) 0', opacity: 0.8 }}>
+            <Search className="mx-auto mb-4" style={{ width: 'var(--space-16)', height: 'var(--space-16)' }} />
+            <p className="section-title text-sm">Enter a search query to explore Solana tokens</p>
           </div>
         )}
       </div>

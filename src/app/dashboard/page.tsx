@@ -119,28 +119,9 @@ export default function DashboardPage() {
   if (!connected || !publicKey) {
     return (
       <AppLayout>
-        <div 
-          className="container-padding flex flex-col items-center justify-center"
-          style={{ minHeight: '60vh' }}
-        >
-          <h1
-            className="mb-4"
-            style={{ 
-              color: 'var(--text)', 
-              fontFamily: "'Times New Roman', Times, serif",
-              fontSize: 'var(--font-3xl)'
-            }}
-          >
-            Dashboard
-          </h1>
-          <p
-            className="mb-6 text-center max-w-md"
-            style={{ 
-              color: 'var(--text-secondary)', 
-              fontFamily: "'Times New Roman', Times, serif",
-              fontSize: 'var(--font-base)'
-            }}
-          >
+        <div className="container-padding flex flex-col items-center justify-center page-title-area" style={{ minHeight: '60vh' }}>
+          <h1 className="page-title mb-4">Dashboard</h1>
+          <p className="page-subtitle mb-6 text-center max-w-md">
             Connect your wallet to view balance, usage, and top up.
           </p>
           <WalletButton />
@@ -153,49 +134,29 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="container-padding max-w-4xl mx-auto">
+      <div className="container-padding mx-auto" style={{ maxWidth: 'var(--content-max-width)' }}>
         {/* Header Section */}
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <h1
-            className="font-bold"
-            style={{ 
-              color: 'var(--text)', 
-              fontFamily: "'Times New Roman', Times, serif",
-              fontSize: 'var(--font-3xl)'
-            }}
-          >
-            Dashboard
-          </h1>
-          <div className="flex items-center gap-3">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between section-spacing" style={{ gap: 'var(--space-4)' }}>
+          <h1 className="page-title">Dashboard</h1>
+          <div className="flex items-center gap-3" style={{ gap: 'var(--space-3)' }}>
             <WalletButton />
             <button
               onClick={() => setRefreshTrigger((n) => n + 1)}
               disabled={loading}
               className="btn-secondary btn-sm flex items-center gap-2"
-              style={{ fontFamily: "'Times New Roman', Times, serif" }}
+              style={{ gap: 'var(--space-2)' }}
               aria-label="Refresh data"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={loading ? 'animate-spin' : ''} style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               Refresh
             </button>
           </div>
         </header>
 
         {/* Balance Cards Section */}
-        <section className="grid gap-6 md:grid-cols-2 mb-8">
-          <div
-            className="card"
-            style={{ fontFamily: "'Times New Roman', Times, serif" }}
-          >
-            <h3 
-              className="text-sm font-medium mb-2"
-              style={{ 
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text-opacity-90)'
-              }}
-            >
-              Balance
-            </h3>
+        <section className="grid gap-6 md:grid-cols-2 section-spacing" style={{ gap: 'var(--space-6)' }}>
+          <div className="card">
+            <h3 className="section-title mb-2">Balance</h3>
             {loading && !balance ? (
               <p style={{ color: 'var(--text-opacity-60)' }}>Loading…</p>
             ) : balance ? (
@@ -240,7 +201,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Usage History Section */}
-        <section className="mb-8">
+        <section className="section-spacing">
           <UsageHistory walletAddress={publicKey.toString()} limit={50} />
         </section>
 
@@ -248,45 +209,31 @@ export default function DashboardPage() {
         <section>
           <div
             className="card mb-4 flex flex-wrap items-center gap-4"
-            style={{ 
-              fontFamily: "'Times New Roman', Times, serif",
-              padding: 'var(--space-3) var(--space-4)'
-            }}
+            style={{ padding: 'var(--space-3) var(--space-4)', gap: 'var(--space-4)' }}
           >
-            <label 
-              className="flex items-center gap-2 cursor-pointer"
-              style={{ color: 'var(--text-opacity-90)' }}
-            >
+            <label className="flex items-center gap-2 cursor-pointer text-primary" style={{ gap: 'var(--space-2)', color: 'var(--text-opacity-90)' }}>
               <input
                 type="checkbox"
                 checked={autoDetect}
                 onChange={(e) => handleAutoDetectChange(e.target.checked)}
-                className="rounded"
-                style={{ 
-                  borderColor: 'var(--border-opacity-20)',
-                  backgroundColor: 'var(--bg-opacity-5)'
-                }}
+                className="rounded input"
+                style={{ borderColor: 'var(--border-opacity-20)', backgroundColor: 'var(--bg-opacity-5)' }}
                 aria-label="Auto-detect deposits"
               />
-              <span 
-                className="text-sm"
-                style={{ fontFamily: "'Times New Roman', Times, serif" }}
-              >
-                Auto-detect deposits
-              </span>
+              <span className="section-title text-sm">Auto-detect deposits</span>
             </label>
             <button
               type="button"
               onClick={() => runScan()}
               disabled={scanning}
               className="btn-secondary flex items-center gap-2 text-sm"
-              style={{ fontFamily: "'Times New Roman', Times, serif" }}
+              style={{ gap: 'var(--space-2)' }}
               aria-label="Check for deposits"
             >
               {scanning ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="animate-spin" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               ) : (
-                <Search className="w-4 h-4" />
+                <Search style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               )}
               Check for deposits
             </button>
@@ -298,17 +245,8 @@ export default function DashboardPage() {
         </section>
 
         {/* Footer Navigation */}
-        <footer className="mt-8 text-center">
-          <Link
-            href="/"
-            className="text-sm transition-colors"
-            style={{ 
-              fontFamily: "'Times New Roman', Times, serif",
-              color: 'var(--text-opacity-60)'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text)'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-opacity-60)'}
-          >
+        <footer className="text-center section-spacing">
+          <Link href="/" className="text-muted text-sm transition-colors hover:text-primary">
             Back to voice companion
           </Link>
         </footer>

@@ -168,6 +168,17 @@
   --sidebar-width: 16rem;  /* 256px */
   --sidebar-width-collapsed: 4rem;  /* 64px */
   --header-height: 4rem;  /* 64px */
+  --drawer-header-height: 4rem;
+  --drawer-footer-height: 5rem;
+  --content-max-width: 56rem;  /* max-w-4xl equivalent */
+  /* Avatar glow spread (single scale for consistency) */
+  --avatar-glow-spread: 1.5rem;
+  --avatar-glow-spread-large: 2rem;
+  /* Icon sizes - use for nav/list icons */
+  --icon-sm: 0.75rem;   /* 12px */
+  --icon-md: 1rem;      /* 16px */
+  --icon-lg: 1.25rem;   /* 20px */
+  --icon-xl: 1.5rem;    /* 24px */
   
   /* Z-Index Scale */
   --z-base: 0;
@@ -376,19 +387,19 @@ textarea::placeholder {
 
 @supports (padding: max(0px)) {
   .safe-area-bottom {
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    padding-bottom: max(var(--space-2), env(safe-area-inset-bottom));
   }
   
   .safe-area-top {
-    padding-top: max(8px, env(safe-area-inset-top));
+    padding-top: max(var(--space-2), env(safe-area-inset-top));
   }
   
   .safe-area-left {
-    padding-left: max(8px, env(safe-area-inset-left));
+    padding-left: max(var(--space-2), env(safe-area-inset-left));
   }
   
   .safe-area-right {
-    padding-right: max(8px, env(safe-area-inset-right));
+    padding-right: max(var(--space-2), env(safe-area-inset-right));
   }
 }
 
@@ -717,6 +728,10 @@ input, textarea, select {
   color: var(--text-opacity-60);
 }
 
+.text-accent {
+  color: var(--accent-primary);
+}
+
 /* Layout Utilities */
 .container-padding {
   padding: var(--space-4);
@@ -732,6 +747,63 @@ input, textarea, select {
   .container-padding {
     padding: var(--space-8);
   }
+}
+
+/* Sidebar width - use design tokens (no hardcoded w-72/w-16) */
+.w-sidebar {
+  width: var(--sidebar-width);
+}
+
+.w-sidebar-collapsed {
+  width: var(--sidebar-width-collapsed);
+}
+
+/* Page & section patterns - universal alignment */
+.page-title {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: var(--font-3xl);
+  font-weight: var(--font-weight-normal);
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.page-subtitle {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+}
+
+.section-title {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text);
+}
+
+.section-spacing {
+  margin-bottom: var(--space-8);
+}
+
+.section-spacing-sm {
+  margin-bottom: var(--space-6);
+}
+
+/* Nav link - shared for sidebar and mobile nav */
+.nav-link {
+  font-family: 'Times New Roman', Times, serif;
+  color: var(--text);
+  background-color: transparent;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.nav-link:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Drawer content area height (header + footer) */
+.drawer-body {
+  height: calc(100% - var(--drawer-header-height) - var(--drawer-footer-height));
+  max-height: 100%;
 }
 
 /* Table Utilities */

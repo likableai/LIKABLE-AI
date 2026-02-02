@@ -51,40 +51,25 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
           zIndex: 'var(--z-drawer)'
         }}
       >
-        {/* Close Button - Top Right */}
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded transition-colors"
-          style={{ 
+          className="nav-link absolute flex items-center justify-center rounded-lg transition-colors"
+          style={{
+            top: 'var(--space-4)',
+            right: 'var(--space-4)',
+            width: 'var(--space-8)',
+            height: 'var(--space-8)',
             color: 'var(--text-opacity-60)',
-            backgroundColor: 'transparent'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--text)';
-            e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--text-opacity-60)';
-            e.currentTarget.style.backgroundColor = 'transparent';
           }}
           aria-label="Close settings"
         >
-          <X className="w-5 h-5" />
+          <X style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
         </button>
 
-        {/* Content */}
-        <div className="h-full overflow-y-auto px-6 py-8">
-          {/* Voice Section */}
-          <section className="mb-10">
-            <h3 
-              className="text-sm font-medium mb-4"
-              style={{ 
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text)'
-              }}
-            >
-              Voice
-            </h3>
+        <div className="h-full overflow-y-auto" style={{ padding: 'var(--space-8) var(--space-6)' }}>
+          <section className="section-spacing">
+            <h3 className="section-title mb-4">Voice</h3>
             <VoiceSelectorDropdown
               selectedVoice={selectedVoice}
               onVoiceChange={onVoiceChange}
@@ -92,17 +77,8 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             />
           </section>
 
-          {/* Model Section */}
-          <section className="mb-10">
-            <h3 
-              className="text-sm font-medium mb-4"
-              style={{ 
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text)'
-              }}
-            >
-              Model
-            </h3>
+          <section className="section-spacing">
+            <h3 className="section-title mb-4">Model</h3>
             <ModelSelectorDropdown
               selectedModel={selectedModel}
               onModelChange={onModelChange}
@@ -110,30 +86,15 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
             />
           </section>
 
-          {/* Visualization Section */}
-          <section className="mb-10">
-            <h3 
-              className="text-sm font-medium mb-4"
-              style={{ 
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text)'
-              }}
-            >
-              Display Mode
-            </h3>
-            <div className="mb-3">
+          <section className="section-spacing">
+            <h3 className="section-title mb-4">Display Mode</h3>
+            <div className="mb-3" style={{ marginBottom: 'var(--space-3)' }}>
               <VisualizationToggle
                 mode={visualizationMode}
                 onChange={onVisualizationModeChange}
               />
             </div>
-            <p 
-              className="text-xs mt-2"
-              style={{ 
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text-opacity-60)'
-              }}
-            >
+            <p className="text-muted text-xs mt-2">
               {visualizationMode === 'character'
                 ? 'Showing character avatar and expressions'
                 : 'Showing audio waveform visualization'}
@@ -142,46 +103,38 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
 
           {/* Session Active Banner */}
           {isSessionActive && (
-            <div 
-              className="mb-10 flex items-center gap-3 px-4 py-3"
-              style={{ 
+            <div
+              className="section-spacing flex items-center gap-3 rounded-lg"
+              style={{
+                padding: 'var(--space-3) var(--space-4)',
+                gap: 'var(--space-3)',
                 backgroundColor: 'var(--color-warning-bg)',
-                border: '1px solid var(--color-warning)'
+                border: '1px solid var(--color-warning)',
               }}
             >
-              <div 
-                className="w-2 h-2 animate-pulse flex-shrink-0 rounded-full"
-                style={{ backgroundColor: 'var(--color-warning)' }}
+              <div
+                className="animate-pulse flex-shrink-0 rounded-full"
+                style={{ width: 'var(--space-2)', height: 'var(--space-2)', backgroundColor: 'var(--color-warning)' }}
               />
-              <span 
-                className="text-sm font-medium"
-                style={{ 
-                  fontFamily: "'Times New Roman', Times, serif",
-                  color: 'var(--color-warning-light)'
-                }}
-              >
+              <span className="section-title text-sm" style={{ color: 'var(--color-warning-light)' }}>
                 Session active
               </span>
             </div>
           )}
 
-          {/* Footer Actions */}
-          <div 
-            className="sticky bottom-0 pt-8 pb-6 mt-8"
-            style={{ 
+          <div
+            className="sticky bottom-0 flex justify-end border-t"
+            style={{
+              paddingTop: 'var(--space-8)',
+              paddingBottom: 'var(--space-6)',
+              marginTop: 'var(--space-8)',
               backgroundColor: 'var(--bg-secondary)',
-              borderTop: '1px solid var(--border-opacity-10)'
+              borderColor: 'var(--border-opacity-10)',
             }}
           >
-            <div className="flex justify-end">
-              <button
-                onClick={onClose}
-                className="btn-secondary"
-                style={{ fontFamily: "'Times New Roman', Times, serif" }}
-              >
-                Save changes
-              </button>
-            </div>
+            <button type="button" onClick={onClose} className="btn-secondary">
+              Save changes
+            </button>
           </div>
         </div>
       </div>
