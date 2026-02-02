@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Home, MessageCircle, Settings as SettingsIcon, Wallet as WalletIcon, LayoutDashboard, Search } from 'lucide-react';
+import { Menu, X, Home, MessageCircle, Settings as SettingsIcon, Wallet as WalletIcon, LayoutDashboard, Search, Twitter, Github } from 'lucide-react';
 
 /* Single sidebar layout tokens - one spacing value for all gaps/padding */
 const SIDEBAR_SPACING = 'var(--space-3)';
@@ -181,8 +181,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTextChatOpen, onSettingsOpen
         </div>
 
         <div className="border-t" style={SIDEBAR_FOOTER_STYLE}>
+          <div className={`flex w-full ${isExpanded ? 'items-center justify-center gap-2' : 'flex-col items-center gap-1'}`} style={isExpanded ? { gap: SIDEBAR_SPACING } : { gap: 'var(--space-1)' }}>
+            <a
+              href="https://x.com/LikableAI"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link rounded-lg flex items-center justify-center shrink-0"
+              style={{ width: 'var(--space-8)', height: 'var(--space-8)', color: 'var(--text-opacity-70)' }}
+              aria-label="Likable AI on X (Twitter)"
+            >
+              <Twitter style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+            </a>
+            <a
+              href="https://github.com/provenalabs/LIKABLE-AI"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link rounded-lg flex items-center justify-center shrink-0"
+              style={{ width: 'var(--space-8)', height: 'var(--space-8)', color: 'var(--text-opacity-70)' }}
+              aria-label="Likable AI on GitHub"
+            >
+              <Github style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+            </a>
+          </div>
           {!isExpanded && (
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center mt-2" style={{ marginTop: 'var(--space-2)' }}>
               <div
                 className="rounded-lg flex items-center justify-center"
                 style={{
