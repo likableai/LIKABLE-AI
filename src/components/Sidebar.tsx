@@ -193,7 +193,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTextChatOpen, onSettingsOpen
               <Twitter style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
             </a>
             <a
-              href="https://github.com/provenalabs/LIKABLE-AI"
+              href="https://github.com/likableai/LIKABLE-AI"
               target="_blank"
               rel="noopener noreferrer"
               className="nav-link rounded-lg flex items-center justify-center shrink-0"
