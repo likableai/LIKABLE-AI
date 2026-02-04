@@ -1,6 +1,6 @@
 # Likable - AI Trading Companion Platform
 
-Likable is a Web3-native **AI trading companion** platform where users pay for AI services using a Solana SPL token. It features dynamic USD-based pricing, 50/50 burn/treasury tokenomics, and multi-wallet support.
+Likable is a Web3-native **AI trading companion** platform where users pay for AI services using a Solana SPL token. It features dynamic USD-based pricing, and multi-wallet support.
 
 ## 🌟 Features
 
@@ -8,20 +8,10 @@ Likable is a Web3-native **AI trading companion** platform where users pay for A
 - **Dual Visualization Modes**: Toggle between animated character avatar or responsive audio waveform visualization
 - **Token-Gated AI Services**: Pay for chat and voice AI using Solana tokens
 - **Dynamic Pricing**: USD-based pricing that automatically converts to tokens using TWAP
-- **50/50 Tokenomics**: Half of tokens burned (deflationary), half to treasury (operations)
 - **Multi-Wallet Support**: Phantom, Solflare, Backpack, and more
 - **Real-Time Balance**: Live token balance and usage tracking
 - **Text Chat (Secondary)**: Text chat available as a slide-out drawer for convenience
 - **Transparent Economics**: Public burn stats and treasury visibility
-
-## 📊 Token Economics
-
-- **Total Supply**: 100,000,000 tokens
-- **Decimals**: 6 (matches USDC)
-- **Distribution**:
-  - 20% Initial Liquidity (Raydium)
-  - 30% Treasury (Operations)
-  - 50% Ecosystem/Future
 
 - **Pricing**:
   - Chat: $0.02 per request (text-based)
