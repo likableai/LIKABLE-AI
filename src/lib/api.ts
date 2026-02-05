@@ -224,4 +224,71 @@ export const sendMessage = async (message: string, walletAddress: string) => {
   return sendChatMessage({ message, walletAddress });
 };
 
+// Meme Studio APIs (backend: same base URL as voice/chat/token)
+export interface MemeTemplate {
+  id: string;
+  name: string;
+  description: string;
+  thumbnail: string | null;
+  format: string;
+  layout: Record<string, unknown>;
+  defaultTopText?: string;
+  defaultBottomText?: string;
+  referenceUrl?: string;
+  style?: string;
+}
+
+export const getMemeTemplates = async (): Promise<MemeTemplate[]> => {
+  const response = await api.get<MemeTemplate[]>('/meme/templates');
+  return response.data;
+};
+
+export const getMemeStyles = async (): Promise<string[]> => {
+  const response = await api.get<string[]>('/meme/styles');
+  return response.data;
+};
+
+export interface GenerateMemeRequest {
+  idea: string;
+  templateId?: string;
+  format?: 'image' | 'gif' | 'video';
+  style?: string;
+  imageProvider?: 'gemini' | 'reve';
+  geminiModel?: 'flash' | 'pro';
+  topText?: string;
+  bottomText?: string;
+  referenceUrl?: string;
+  referenceType?: 'image' | 'gif' | 'video';
+}
+
+export interface MemeImageProvider {
+  value: string;
+  label: string;
+}
+
+export const getMemeProviders = async (): Promise<MemeImageProvider[]> => {
+  const response = await api.get<MemeImageProvider[]>('/meme/providers');
+  return response.data;
+};
+
+/** Resolve generated url for display/download: prefix /api/meme/file/ with backend origin. */
+export function resolveMemeFileUrl(url: string): string {
+  if (typeof url !== 'string' || !url) return url;
+  if (url.startsWith('/api/meme/file/')) {
+    const base = getApiUrl().replace(/\/api$/, '');
+    return `${base}${url}`;
+  }
+  return url;
+}
+
+export interface GenerateMemeResponse {
+  url: string;
+  format: string;
+}
+
+export const generateMeme = async (body: GenerateMemeRequest): Promise<GenerateMemeResponse> => {
+  const response = await api.post<GenerateMemeResponse>('/meme/generate', body);
+  return response.data;
+};
+
 export default api;

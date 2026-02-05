@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Home, MessageCircle, Settings as SettingsIcon, Wallet as WalletIcon, LayoutDashboard, Search, Twitter, Github } from 'lucide-react';
+import { Menu, X, Home, MessageCircle, Settings as SettingsIcon, Wallet as WalletIcon, LayoutDashboard, Search, ImageIcon, Twitter, Github } from 'lucide-react';
 
 /* Single sidebar layout tokens - one spacing value for all gaps/padding */
 const SIDEBAR_SPACING = 'var(--space-3)';
@@ -118,6 +118,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTextChatOpen, onSettingsOpen
       ariaLabel: 'Explorer',
       icon: <Search className="flex-shrink-0" style={ICON_LG} />,
       href: '/explorer',
+    },
+    {
+      id: 'meme-studio',
+      label: 'Meme Studio',
+      ariaLabel: 'Meme Studio',
+      icon: <ImageIcon className="flex-shrink-0" style={ICON_LG} />,
+      href: '/meme-studio',
     },
   ];
 
@@ -273,6 +280,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTextChatOpen, onSettingsOpen
             <Link href="/explorer" className="nav-link flex flex-col items-center no-underline rounded-lg p-2" style={{ gap: 'var(--space-1)' }} aria-label="Explorer">
               <Search style={ICON_XL} />
               <span className="text-xs">Explorer</span>
+            </Link>
+            <Link href="/meme-studio" className="nav-link flex flex-col items-center no-underline rounded-lg p-2" style={{ gap: 'var(--space-1)' }} aria-label="Meme Studio">
+              <ImageIcon style={ICON_XL} />
+              <span className="text-xs">Meme</span>
             </Link>
           </div>
         </nav>

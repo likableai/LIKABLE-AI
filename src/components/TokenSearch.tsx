@@ -2,7 +2,8 @@
 
 import React, { useRef, useState } from 'react';
 import { searchTokens } from '@/lib/api';
-import { Search, Info, TrendingUp, Users, ChevronRight, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { Search, ChevronRight, AlertCircle, ImageIcon } from 'lucide-react';
 
 interface TokenInfo {
   mint: string;
@@ -145,19 +146,28 @@ const TokenSearch: React.FC = () => {
                 <ChevronRight className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 text-accent" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
               </div>
 
-              <div className="flex flex-wrap text-muted mt-4" style={{ gap: 'var(--space-3)', fontSize: 'var(--font-xs)' }}>
-                <span>
+              <div className="flex flex-wrap items-center mt-4" style={{ gap: 'var(--space-3)', fontSize: 'var(--font-xs)' }}>
+                <span className="text-muted">
                   Score:{' '}
                   <strong style={{ color: 'var(--text)' }}>
                     {token.organicScore?.toFixed(1) || 'N/A'}
                   </strong>
                 </span>
-                <span>
+                <span className="text-muted">
                   Holders:{' '}
                   <strong style={{ color: 'var(--text)' }}>
                     {token.holderCount ? (token.holderCount > 1000 ? (token.holderCount/1000).toFixed(1) + 'k' : token.holderCount) : 'N/A'}
                   </strong>
                 </span>
+                <Link
+                  href={`/meme-studio?token=${encodeURIComponent(token.symbol)}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="nav-link flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs"
+                  style={{ marginLeft: 'auto', color: 'var(--text-opacity-80)' }}
+                >
+                  <ImageIcon style={{ width: 14, height: 14 }} />
+                  Create meme
+                </Link>
               </div>
             </div>
           ))
