@@ -1,0 +1,2168 @@
+title: API Documentation
+subtitle: >-
+  Power your creativity with LTX-2 — an advanced LTX Model built for seamless
+  video generation
+slug: welcome
+description: >-
+  Power your creativity with LTX-2 — an advanced LTX Model built for seamless
+  video generation. Access our AI API to create high-quality visual content at
+  scale.
+seo:
+  title: API Documentation | LTX Model
+  description: >-
+    Power your creativity with LTX-2 — an advanced LTX Model built for seamless
+    video generation. Access our AI API to create high-quality visual content at
+    scale.
+  canonical: 'https://docs.ltx.video/welcome'
+  'og:title': API Documentation
+  'og:description': >-
+    Power your creativity with LTX-2 — an advanced LTX Model built for seamless
+    video generation. Access our AI API to create high-quality visual content at
+    scale.
+  'twitter:title': API Documentation
+  'twitter:description': >-
+    Power your creativity with LTX-2 — an advanced LTX Model built for seamless
+    video generation. Access our AI API to create high-quality visual content at
+    scale.
+---
+
+The LTX-2 API generates videos from images, text prompts, and audio.
+
+## Capabilities
+
+[**Image-to-Video**](/api-documentation/api-reference/video-generation/image-to-video): Bring stills to life with motion and depth.
+
+[**Text-to-Video**](/api-documentation/api-reference/video-generation/text-to-video): Turn ideas into cinematic motion.
+
+[**Audio-to-Video**](/api-documentation/api-reference/video-generation/audio-to-video): Let sound drive the scene.
+
+[**Retake**](/api-documentation/api-reference/video-generation/retake): Rewrite a moment without reshooting.
+
+
+---
+title: Quick Start
+subtitle: Get started with LTX-2 API in minutes
+slug: quickstart
+description: >-
+  Learn how to get started with the LTX API in minutes. This quick start guide
+  walks you through setup, authentication, and your first video generation
+  request.
+seo:
+  title: Quick Start | LTX Model
+  description: >-
+    Learn how to get started with the LTX API in minutes. This quick start guide
+    walks you through setup, authentication, and your first video generation
+    request.
+  canonical: 'https://docs.ltx.video/quickstart'
+  'og:title': Quick Start
+  'og:description': >-
+    Learn how to get started with the LTX API in minutes. This quick start guide
+    walks you through setup, authentication, and your first video generation
+    request.
+  'twitter:title': Quick Start
+  'twitter:description': >-
+    Learn how to get started with the LTX API in minutes. This quick start guide
+    walks you through setup, authentication, and your first video generation
+    request.
+---
+## Get your API Key
+
+Sign in to the Developer Console to create your API key.
+
+<Button href="https://console.ltx.video" intent="primary" icon="fa-solid fa-key">
+  Create API Key
+</Button>
+
+## Make your first request
+
+### Text-to-Video
+
+Generate a video from a text prompt:
+
+<CodeBlock title="Request">
+```bash
+curl -X POST https://api.ltx.video/v1/text-to-video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A majestic eagle soaring through clouds at sunset",
+    "model": "ltx-2-pro",
+    "duration": 8,
+    "resolution": "1920x1080"
+  }' \
+  -o video.mp4
+```
+</CodeBlock>
+
+The API returns the generated video file directly as an MP4.
+
+### Image-to-Video
+
+Transform a static image into a dynamic video:
+
+<CodeBlock title="Request">
+```bash
+curl -X POST https://api.ltx.video/v1/image-to-video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "image_uri": "https://example.com/sunset.jpg",
+    "prompt": "Clouds drifting across the sky as the sun sets slowly",
+    "model": "ltx-2-pro",
+    "duration": 8,
+    "resolution": "1920x1080"
+  }' \
+  -o video.mp4
+```
+</CodeBlock>
+
+## Response
+
+Successful requests return:
+- **Body**: The generated video file (MP4 format)
+- **Headers**:
+  - `Content-Type: video/mp4`
+  - `x-request-id`: Unique identifier for tracking
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="Supported Models"
+    icon="fa-solid fa-microchip"
+    href="/models"
+  >
+    Learn about available models and their capabilities
+  </Card>
+  <Card
+    title="API Reference"
+    icon="fa-solid fa-code"
+    href="/api-reference"
+  >
+    Explore all endpoints and parameters
+  </Card>
+</CardGroup>
+
+
+---
+title: Authentication
+subtitle: Secure your API requests with API keys
+slug: authentication
+description: >-
+  Understand how to securely authenticate with the LTX API. Follow step-by-step
+  instructions for generating and managing API keys safely.
+seo:
+  title: Authentication | LTX Model
+  description: >-
+    Understand how to securely authenticate with the LTX API. Follow
+    step-by-step instructions for generating and managing API keys safely.
+  canonical: 'https://docs.ltx.video/authentication'
+  noindex: false
+  'og:title': Authentication
+  'og:description': >-
+    Understand how to securely authenticate with the LTX API. Follow
+    step-by-step instructions for generating and managing API keys safely.
+  'twitter:title': Authentication
+  'twitter:description': >-
+    Understand how to securely authenticate with the LTX API. Follow
+    step-by-step instructions for generating and managing API keys safely.
+  'twitter:site': '@ltx_model'
+---
+
+All LTX-2 API requests require authentication using API keys. API keys are associated with your account and provide access to the API endpoints.
+
+## Getting Your API Key
+
+Sign in to the Developer Console to create your API key.
+
+<Button href="https://console.ltx.video" intent="primary" icon="fa-solid fa-key">
+  Create API Key
+</Button>
+
+## Using Your API Key
+
+Include your API key in the `Authorization` header of every request using the Bearer token format:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Example Request
+
+<CodeBlock title="cURL">
+```bash
+curl -X POST https://api.ltx.video/v1/text-to-video \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A majestic eagle soaring through clouds",
+    "model": "ltx-2-pro",
+    "duration": 8,
+    "resolution": "1920x1080"
+  }'
+```
+</CodeBlock>
+
+<CodeBlock title="Python">
+```python
+import requests
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(
+    "https://api.ltx.video/v1/text-to-video",
+    headers=headers,
+    json={
+        "prompt": "A majestic eagle soaring through clouds",
+        "model": "ltx-2-pro",
+        "duration": 8,
+        "resolution": "1920x1080"
+    }
+)
+```
+</CodeBlock>
+
+## Security Best Practices
+
+<Callout intent="warning">
+**Keep your API key secure:**
+- Never commit API keys to version control
+- Don't expose keys in client-side code
+- Use environment variables to store keys
+- Rotate keys periodically
+</Callout>
+
+### Environment Variables
+
+Store your API key in environment variables:
+
+**Bash:**
+```bash
+export LTXV_API_KEY="your_api_key_here"
+```
+
+**Python:**
+```python
+import os
+
+api_key = os.environ.get("LTXV_API_KEY")
+```
+
+**Node.js:**
+```javascript
+const apiKey = process.env.LTXV_API_KEY;
+```
+
+## Authentication Errors
+
+If authentication fails, you'll receive a `401 Unauthorized` response:
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid API key"
+  }
+}
+```
+
+Common authentication issues:
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Missing authorization header | No `Authorization` header | Add the header to your request |
+| Invalid API key | Key is incorrect or expired | Verify your API key |
+| Malformed header | Incorrect format | Use `Bearer YOUR_API_KEY` format |
+
+## Rate Limits
+
+API keys are subject to rate limits based on your plan. If you exceed your rate limit, you'll receive a `429 Too Many Requests` response.
+
+Contact our team to discuss rate limit increases for your use case.
+
+
+---
+title: Supported Models
+subtitle: Choose the right model for your use case
+slug: models
+description: >-
+  Explore all supported LTX models for text-to-video, image-to-video, and other
+  generation tasks. Learn their capabilities and best use cases.
+seo:
+  title: Supported Models | LTX Model
+  description: >-
+    Explore all supported LTX models for text-to-video, image-to-video, and
+    other generation tasks. Learn their capabilities and best use cases.
+  canonical: 'https://docs.ltx.video/models'
+  'og:title': Supported Models
+  'og:description': >-
+    Explore all supported LTX models for text-to-video, image-to-video, and
+    other generation tasks. Learn their capabilities and best use cases.
+  'twitter:title': Supported Models
+  'twitter:description': >-
+    Explore all supported LTX models for text-to-video, image-to-video, and
+    other generation tasks. Learn their capabilities and best use cases.
+---
+
+The LTX-2 API offers video generation models optimized for different quality levels, speed, and resolution requirements.
+
+## Model support matrix
+
+This table specifies which resolutions, FPS values, and duration options are supported for each video generation model, when using the video generation endpoints.
+
+| Model           | Resolution  | FPS    | Duration (seconds)              |
+| --------------- | ----------- | ------ | ------------------------------- |
+| **ltx-2-fast**  | `1920x1080` | 25     | 6, 8, 10, 12, 14, 16, 18, 20    |
+|                 | `1920x1080` | 50     | 6, 8, 10                        |
+|                 | `2560x1440` | 25, 50 | 6, 8, 10                        |
+|                 | `3840x2160` | 25, 50 | 6, 8, 10                        |
+| **ltx-2-pro**   | `1920x1080` | 25, 50 | 6, 8, 10                        |
+|                 | `2560x1440` | 25, 50 | 6, 8, 10                        |
+|                 | `3840x2160` | 25, 50 | 6, 8, 10                        |
+
+
+---
+title: Input Formats
+subtitle: Media input specification for the API
+slug: input-formats
+description: >-
+  Complete guide to providing image and video inputs to the LTX API. Learn about
+  upload methods, supported formats, codecs, and constraints.
+seo:
+  title: Input Formats | LTX Model
+  description: >-
+    Complete guide to providing image and video inputs to the LTX API. Learn
+    about upload methods, supported formats, codecs, and constraints.
+  canonical: 'https://docs.ltx.video/input-formats'
+  'og:title': Input Formats
+  'og:description': >-
+    Complete guide to providing image and video inputs to the LTX API. Learn
+    about upload methods, supported formats, codecs, and constraints.
+  'twitter:title': Input Formats
+  'twitter:description': >-
+    Complete guide to providing image and video inputs to the LTX API. Learn
+    about upload methods, supported formats, codecs, and constraints.
+---
+
+## Input Methods
+
+The API accepts media through `image_uri`, `video_uri`, and `audio_uri` parameters using three methods:
+
+| Method | Max Size |
+|--------|----------|
+| [**Cloud Storage**](#cloud-storage-upload) | 100 MB |
+| [**HTTPS URL**](#https-url) | 15 MB (images), 32 MB (videos/audio) |
+| [**Data URI**](#data-uri-base64) | 7 MB (images), 15 MB (videos/audio) |
+
+---
+
+### Cloud Storage Upload
+
+Upload via [`v1/upload`](/api-documentation/api-reference/upload/create-upload) endpoint. Returns a `storage_uri` for use in generation requests.
+
+```json
+{
+  "image_uri": "ltx://uploads/abc-123"
+}
+```
+
+| Max file size | Upload URL expires | File available | Authentication |
+|---|---|---|---|
+| 100 MB | 1 hour | 24 hours | API key |
+
+---
+
+### HTTPS URL
+
+Direct link to publicly accessible files. API fetches during request.
+
+```json
+{
+  "image_uri": "https://example.com/sunset.jpg"
+}
+```
+
+| Property | Images | Videos | Audio |
+|----------|--------|--------|-------|
+| Max size | 15 MB | 32 MB | 32 MB |
+| Timeout | 10s | 30s | 30s |
+
+**Requirements:**
+- HTTPS only
+- Domain names (no IPs)
+- Publicly accessible
+- No redirects
+
+---
+
+### Data URI (Base64)
+
+Inline base64-encoded data. Format: `data:{mime-type};base64,{encoded-data}`
+
+```json
+{
+  "image_uri": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+}
+```
+
+| Property | Images | Videos | Audio |
+|----------|--------|--------|-------|
+| Max encoded size | 7 MB | 15 MB | 15 MB |
+
+<Note>Base64 encoding increases file size by ~33%.</Note>
+
+---
+
+## Supported Formats
+
+### Images
+
+| Format | MIME Type |
+|--------|-----------|
+| PNG | `image/png` |
+| JPEG / JPG | `image/jpeg` |
+| WEBP | `image/webp` |
+
+### Videos
+
+| Format | MIME Type | Codecs |
+|--------|-----------|--------|
+| MP4 | `video/mp4` | H.264, H.265 |
+| MOV | `video/quicktime` | H.264, H.265 |
+| MKV | `video/x-matroska` | H.264, H.265 |
+
+### Audio
+
+| Format | MIME Type | Codecs |
+|--------|-----------|--------|
+| WAV | `audio/wav` | AAC-LC, MP3, Opus, Vorbis, FLAC |
+| MP3 | `audio/mpeg` | MP3 |
+| M4A | `audio/mp4` | AAC-LC |
+| OGG | `audio/ogg` | Opus, Vorbis |
+
+<Note>AAC audio must use AAC-LC profile (1024 samples/frame). HE-AAC and HE-AACv2 (2048 samples/frame) are not supported. PCM audio is not supported.</Note>
+
+
+---
+title: Rate Limits
+subtitle: API usage limits and restrictions
+slug: rate-limits
+description: >-
+  Review LTX API rate limits and request quotas. Learn how to optimize your
+  usage and avoid throttling with efficient request management.
+seo:
+  title: Rate Limits | LTX Model
+  description: >-
+    Review LTX API rate limits and request quotas. Learn how to optimize your
+    usage and avoid throttling with efficient request management.
+  canonical: 'https://docs.ltx.video/rate-limits'
+  'og:title': Rate Limits
+  'og:description': >-
+    Review LTX API rate limits and request quotas. Learn how to optimize your
+    usage and avoid throttling with efficient request management.
+  'twitter:title': Rate Limits
+  'twitter:description': >-
+    Review LTX API rate limits and request quotas. Learn how to optimize your
+    usage and avoid throttling with efficient request management.
+---
+
+## Limit types
+
+* **Concurrency limits**: Maximum number of simultaneous video generation requests.
+
+* **Rate limits**: Maximum number of requests within a time window.
+
+## Error response
+
+When a limit is exceeded, the API returns `429 Too Many Requests` with a `Retry-After` header indicating seconds to wait.
+
+**Error types:**
+- `concurrency_limit_error`: Too many concurrent requests
+- `rate_limit_error`: Too many requests in time window
+
+**Example:**
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "rate_limit_error",
+    "message": "Too many requests. Please try again later."
+  }
+}
+```
+
+
+---
+title: Debugging Requests
+subtitle: Response headers for troubleshooting
+slug: debugging
+description: >-
+  Find out how to debug and troubleshoot API requests in LTX. Includes tips for
+  logging, inspecting responses, and identifying common issues.
+seo:
+  title: Debugging Requests | LTX Model
+  description: >-
+    Find out how to debug and troubleshoot API requests in LTX. Includes tips
+    for logging, inspecting responses, and identifying common issues.
+  canonical: 'https://docs.ltx.video/debugging'
+  'og:title': Debugging Requests
+  'og:description': >-
+    Find out how to debug and troubleshoot API requests in LTX. Includes tips
+    for logging, inspecting responses, and identifying common issues.
+  'twitter:title': Debugging Requests
+  'twitter:description': >-
+    Find out how to debug and troubleshoot API requests in LTX. Includes tips
+    for logging, inspecting responses, and identifying common issues.
+---
+
+## Response headers
+
+**`x-request-id`**
+
+Unique identifier for each API request. Include this when contacting support.
+
+```
+x-request-id: 1234567890abcdef1234567890abcdef
+```
+
+We recommend to Log request IDs in production deployments for efficient troubleshooting with support.
+
+
+---
+title: Error Handling
+subtitle: API error responses and status codes
+slug: errors
+description: >-
+  Learn how LTX communicates errors and how to handle them gracefully. Includes
+  error codes, response examples, and best practices.
+seo:
+  title: Error Handling | LTX Model
+  description: >-
+    Learn how LTX communicates errors and how to handle them gracefully.
+    Includes error codes, response examples, and best practices.
+  canonical: 'https://docs.ltx.video/errors'
+  noindex: false
+  'og:site_name': LTX
+  'og:title': Error Handling
+  'og:description': >-
+    Learn how LTX communicates errors and how to handle them gracefully.
+    Includes error codes, response examples, and best practices.
+  'twitter:card': summary_large_image
+  'twitter:title': Error Handling
+  'twitter:description': >-
+    Learn how LTX communicates errors and how to handle them gracefully.
+    Includes error codes, response examples, and best practices.
+---
+
+## Error Response Format
+
+All error responses use this structure:
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "error_type",
+    "message": "Human-readable error message"
+  }
+}
+```
+
+## HTTP Status Codes
+
+### 400 - Bad Request
+
+**Error Type:** `invalid_request_error`
+
+Invalid request parameters or validation errors.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "invalid_request_error",
+    "message": "prompt is required"
+  }
+}
+```
+
+### 401 - Unauthorized
+
+**Error Type:** `authentication_error`
+
+Missing or invalid API key.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "authentication_error",
+    "message": "Missing authorization header"
+  }
+}
+```
+
+### 402 - Payment Required
+
+**Error Type:** `insufficient_funds_error`
+
+Your account does not have enough credits to complete this request. This occurs when the estimated cost of the video generation exceeds your available balance.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "insufficient_funds_error",
+    "message": "Insufficient funds. Required: 120 credits"
+  }
+}
+```
+
+**Resolution:**
+- Check your current balance in your account dashboard
+- Add credits to your account before retrying the request
+- Consider generating a shorter video or using a lower resolution to reduce cost
+
+See [Pricing](/pricing) for details on video generation costs.
+
+### 413 - Payload Too Large
+
+**Error Type:** `request_too_large`
+
+Request exceeds the maximum allowed number of bytes. This error is returned from the infrastructure layer before the request reaches the API. See [Input Formats](/input-formats) for size limits.
+
+### 422 - Content Filtered
+
+**Error Type:** `content_filtered_error`
+
+Content rejected by safety filters.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "content_filtered_error",
+    "message": "Content is filtered due to policy restrictions"
+  }
+}
+```
+
+### 429 - Too Many Requests
+
+**Error Types:** `rate_limit_error`, `concurrency_limit_error`
+
+Rate limit or concurrency limit exceeded. See [Rate Limits](/rate-limits) for details.
+
+### 500 - Internal Server Error
+
+**Error Type:** `api_error`
+
+Unexpected server error.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "api_error",
+    "message": "Internal server error"
+  }
+}
+```
+
+### 503 - Service Unavailable
+
+**Error Type:** `service_unavailable`
+
+Service temporarily unavailable.
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "service_unavailable",
+    "message": "Service temporarily unavailable"
+  }
+}
+```
+
+
+# Prompting Guide for LTX-2
+
+To get the most out of the **LTX-2** model, a strong prompt makes all the difference. The key is painting a complete picture of the story you’re telling — one that flows naturally from beginning to end and covers all the elements the model needs to bring your vision to life.
+
+If you’re new to writing prompts for video generation, this guide will help you construct effective, production-ready prompts.
+
+## Table of Contents
+
+- [Key Elements to Include](#key-elements-to-include)
+- [For Best Results](#for-best-results)
+- [Helpful Terms](#additional-helpful-terms)
+- [What Works Well with LTX-2](#what-works-well-with-ltx-2)
+  - [Voice Capabilities](#voice-capabilities)
+- [What to Avoid with LTX-2](#what-to-avoid-with-ltx-2)
+- [Sample Prompts](#sample-prompts)
+  - [Example 1](#example-1)
+  - [Example 2](#example-2)
+
+---
+
+## Key Elements to Include
+
+When writing a prompt, aim to include the following elements:
+
+### 1. Establish the Shot
+
+Use cinematography terms that match your intended genre. Include shot scale or category-specific characteristics to refine the visual style.
+
+### 2. Set the Scene
+
+Describe lighting conditions, color palette, surface textures, and atmosphere to establish mood and tone.
+
+### 3. Describe the Action
+
+Write the core action as a natural sequence, flowing clearly from beginning to end.
+
+### 4. Define the Character(s)
+
+Include age, hairstyle, clothing, and distinguishing features. Express emotion through **physical cues**, not abstract labels.
+
+### 5. Identify Camera Movement(s)
+
+Specify how and when the camera moves. Describing how subjects appear _after_ the movement helps the model complete the motion accurately.
+
+### 6. Describe the Audio
+
+Clearly describe ambient sound, music, speech, or singing.
+
+- Place spoken dialogue in **quotation marks**
+- Specify language and accent if needed
+
+---
+
+## For Best Results
+
+- Write your prompt as a **single flowing paragraph**
+- Use **present tense** verbs for action and movement
+- Match the level of detail to the shot scale  
+  (close-ups need more detail than wide shots)
+- Describe camera movement relative to the subject
+- Aim for **4–8 descriptive sentences**
+- Iterate freely — LTX-2 is designed for fast experimentation
+
+---
+
+## Additional Helpful Terms
+
+This list is not exhaustive, but provides useful examples for shaping your results.
+
+### Categories
+
+**Animation**
+
+- Stop-motion
+- 2D / 3D animation
+- Claymation
+- Hand-drawn
+
+**Stylized**
+
+- Comic book
+- Cyberpunk
+- 8-bit pixel
+- Surreal
+- Minimalist
+- Painterly
+- Illustrated
+
+**Cinematic**
+
+- Period drama
+- Film noir
+- Fantasy
+- Epic space opera
+- Thriller
+- Modern romance
+- Experimental film
+- Arthouse
+- Documentary
+
+---
+
+### Visual Details
+
+**Lighting**
+
+- Flickering candles
+- Neon glow
+- Natural sunlight
+- Dramatic shadows
+
+**Textures**
+
+- Rough stone
+- Smooth metal
+- Worn fabric
+- Glossy surfaces
+
+**Color Palette**
+
+- Vibrant
+- Muted
+- Monochromatic
+- High contrast
+
+**Atmosphere**
+
+- Fog
+- Rain
+- Dust
+- Smoke
+- Particles
+
+---
+
+### Sound and Voice
+
+**Ambient Settings**
+
+- Coffeeshop noise
+- Wind and rain
+- Forest ambience with birds
+
+**Dialogue Style**
+
+- Energetic announcer
+- Resonant voice with gravitas
+- Distorted radio-style
+- Robotic monotone
+- Childlike curiosity
+
+**Volume**
+
+- Whisper
+- Mutter
+- Shout
+- Scream
+
+---
+
+### Technical Style Markers
+
+**Camera Language**
+
+- Follows
+- Tracks
+- Pans across
+- Circles around
+- Tilts upward
+- Pushes in / pulls back
+- Overhead view
+- Handheld movement
+- Over-the-shoulder
+- Wide establishing shot
+- Static frame
+
+**Film Characteristics**
+
+- Film grain
+- Lens flares
+- Pixelated edges
+- Jittery stop-motion
+
+**Scale Indicators**
+
+- Expansive
+- Epic
+- Intimate
+- Claustrophobic
+
+**Pacing & Temporal Effects**
+
+- Slow motion
+- Time-lapse
+- Rapid cuts
+- Lingering shot
+- Continuous shot
+- Freeze-frame
+- Fade-in / fade-out
+- Seamless transition
+- Sudden stop
+
+**Visual Effects**
+
+- Particle systems
+- Motion blur
+- Depth of field
+
+---
+
+## What Works Well with LTX-2
+
+| Strength                | Description                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| Cinematic compositions  | Wide, medium, and close-up shots with thoughtful lighting, shallow depth of field, and natural motion |
+| Emotive human moments   | Strong single-subject emotional expressions, subtle gestures, and facial nuance                       |
+| Atmosphere & setting    | Fog, mist, golden-hour light, rain, reflections, ambient textures                                     |
+| Clear camera language   | Explicit instructions like “slow dolly in” or “handheld tracking”                                     |
+| Stylized aesthetics     | Painterly, noir, analog film, fashion editorial, pixelated animation                                  |
+| Lighting & mood control | Backlighting, color palettes, rim light, flickering lamps                                             |
+
+### Voice Capabilities
+
+- Characters can **talk and sing**
+- Supports **multiple languages**
+
+---
+
+## What to Avoid with LTX-2
+
+| Avoid                     | Why It Doesn’t Work                                        |
+| ------------------------- | ---------------------------------------------------------- |
+| Internal emotional states | Use visual cues instead of labels like “sad” or “confused” |
+| Text and logos            | Readable text is not currently reliable                    |
+| Complex physics           | Chaotic motion can introduce artifacts (dancing is OK)     |
+| Overloaded scenes         | Too many characters or actions reduce clarity              |
+| Conflicting lighting      | Mixed light logic confuses scene interpretation            |
+| Overcomplicated prompts   | Start simple and layer complexity gradually                |
+
+---
+
+## Sample Prompts
+
+### Example 1
+
+[![News video](https://vumbnail.com/1133134310.jpg)](https://player.vimeo.com/video/1133134310)
+
+**Prompt:**
+
+_EXT. SMALL TOWN STREET – MORNING – LIVE NEWS BROADCAST
+The shot opens on a news reporter standing in front of a row of cordoned-off cars, yellow caution tape fluttering behind him. The light is warm, early sun reflecting off the camera lens. The faint hum of chatter and distant drilling fills the air.
+The reporter, composed but visibly excited, looks directly into the camera, microphone in hand.
+Reporter (live):
+“Thank you, Sylvia. And yes — this is a sentence I never thought I’d say on live television — but this morning, here in the quiet town of New Castle, Vermont… black gold has been found!”
+He gestures slightly toward the field behind him.
+Reporter (grinning):
+“If my cameraman can pan over, you’ll see what all the excitement’s about.”
+The camera pans right, slowly revealing a construction site surrounded by workers in hard hats. A beat of silence — then, with a sudden roar, a geyser of oil erupts from the ground, blasting upward in a violent plume.
+Workers cheer and scramble, the black stream glistening in the morning light. The camera shakes slightly, trying to stay focused through the chaos.
+Reporter (off-screen, shouting over the noise):
+“There it is, folks — the moment New Castle will never forget!”
+The camera catches the sunlight gleaming off the oil mist before pulling back, revealing the entire scene — the small-town skyline silhouetted against the wild fountain of oil._
+
+### Example 2
+
+[![Animation](https://vumbnail.com/1133134445.jpg)](https://player.vimeo.com/video/1133134445)
+
+**Prompt:**
+
+_The camera opens in a calm, sunlit frog yoga studio. Warm morning light washes over the wooden floor as incense smoke drifts lazily in the air. The senior frog instructor sits cross-legged at the center, eyes closed, voice deep and calm. “We are one with the pond.” All the frogs answer softly: “Ommm...” “We are one with the mud.” “Ommm...” He smiles faintly. “We are one with the flies.” A pause.
+The camera pans to the side towards one frog who twitches, eyes darting. Suddenly its tongue snaps out, catching a fly mid-air and pulling it into its mouth.
+The master exhales slowly, still serene. “But we do not chase the flies...” Beat. “not during class.”
+The guilty frog lowers its head in shame, folding its hands back into a meditative pose. The other frogs resume their chant: “Ommm...” Camera holds for a moment on the embarrassed frog, eyes closed too tightly, pretending nothing happened._
+
+
+---
+title: Pricing
+subtitle: API pricing for video generation
+slug: pricing
+description: >-
+  Detailed pricing for LTX API video generation endpoints. Understand cost per
+  second based on model, resolution, and endpoint type.
+seo:
+  title: Pricing | LTX Model
+  description: >-
+    Detailed pricing for LTX API video generation endpoints. Understand cost per
+    second based on model, resolution, and endpoint type.
+  canonical: 'https://docs.ltx.video/pricing'
+  'og:title': Pricing
+  'og:description': >-
+    Detailed pricing for LTX API video generation endpoints. Understand cost per
+    second based on model, resolution, and endpoint type.
+  'twitter:title': Pricing
+  'twitter:description': >-
+    Detailed pricing for LTX API video generation endpoints. Understand cost per
+    second based on model, resolution, and endpoint type.
+---
+
+Video generation is billed per second of output video. Higher resolution and premium models have proportionally higher costs.
+
+## Text-to-Video
+
+Generate videos from text prompts. Pricing is based on the **duration of the generated video** in seconds.
+
+| Endpoint | Model | Resolution | Cost per second |
+| -------- | ----- | ---------- | --------------- |
+| [**v1/text-to-video**](/api-reference/video-generation/text-to-video) | **ltx-2-fast** | `1920x1080` | $0.04 |
+|  |  | `2560x1440` | $0.08 |
+|  |  | `3840x2160` | $0.16 |
+|  | **ltx-2-pro** | `1920x1080` | $0.06 |
+|  |  | `2560x1440` | $0.12 |
+|  |  | `3840x2160` | $0.24 |
+
+## Image-to-Video
+
+Generate videos from an input image. Pricing is based on the **duration of the generated video** in seconds.
+
+| Endpoint | Model | Resolution | Cost per second |
+| -------- | ----- | ---------- | --------------- |
+| [**v1/image-to-video**](/api-reference/video-generation/image-to-video) | **ltx-2-fast** | `1920x1080` | $0.04 |
+|  |  | `2560x1440` | $0.08 |
+|  |  | `3840x2160` | $0.16 |
+|  | **ltx-2-pro** | `1920x1080` | $0.06 |
+|  |  | `2560x1440` | $0.12 |
+|  |  | `3840x2160` | $0.24 |
+
+## Audio-to-Video
+
+Generate videos synchronized to audio input. Pricing is based on the **duration of the input audio** in seconds.
+
+| Endpoint | Model | Resolution | Cost per second |
+| -------- | ----- | ---------- | --------------- |
+| [**v1/audio-to-video**](/api-reference/video-generation/audio-to-video) | **ltx-2-pro** | `1920x1080` | $0.10 |
+
+## Retake (Video Editing)
+
+Edit and regenerate portions of an existing video. Pricing is based on the **duration of the input video**.
+
+| Endpoint | Model | Resolution | Cost per second |
+| -------- | ----- | ---------- | --------------- |
+| [**v1/retake**](/api-reference/video-generation/retake) | **ltx-2-pro** | `1920x1080` | $0.10 |
+
+
+
+
+# Upload file
+
+POST https://api.ltx.video/v1/upload
+
+Generate a signed URL for uploading media files to use as input for video generation.
+
+Returns a pre-signed URL that can be used to upload files directly to cloud storage.
+Use the returned `storage_uri` in subsequent video generation requests (e.g., `image_uri` or `video_uri` parameters).
+The URL expires after 1 hour.
+
+
+Reference: https://docs.ltx.video/api-documentation/api-reference/upload/create-upload
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.1.1
+info:
+  title: Upload file
+  version: endpoint_upload.createUpload
+paths:
+  /v1/upload:
+    post:
+      operationId: create-upload
+      summary: Upload file
+      description: >
+        Generate a signed URL for uploading media files to use as input for
+        video generation.
+
+
+        Returns a pre-signed URL that can be used to upload files directly to
+        cloud storage.
+
+        Use the returned `storage_uri` in subsequent video generation requests
+        (e.g., `image_uri` or `video_uri` parameters).
+
+        The URL expires after 1 hour.
+      tags:
+        - - subpackage_upload
+      parameters:
+        - name: Authorization
+          in: header
+          description: API key authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Upload URL generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '401':
+          description: Authentication failed
+          content: {}
+        '500':
+          description: An unexpected error occurred
+          content: {}
+        '503':
+          description: Service temporarily unavailable
+          content: {}
+components:
+  schemas:
+    UploadResponse:
+      type: object
+      properties:
+        upload_url:
+          type: string
+          description: >
+            Pre-signed URL for uploading the file. Use PUT request to upload
+            your file to this URL.
+
+            The URL includes all necessary authentication and expires after 1
+            hour.
+        storage_uri:
+          type: string
+          description: >
+            Storage URI that can be used to reference the uploaded file in
+            subsequent API requests.
+
+            Use this value in image_uri or video_uri parameters.
+
+            The uploaded file will be available for 24 hours.
+        expires_at:
+          type: string
+          format: date-time
+          description: >
+            ISO 8601 timestamp indicating when the signed URL expires (1 hour
+            from creation).
+        required_headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: >
+            Headers that must be included in the upload request to cloud
+            storage.
+
+            These headers enforce upload constraints like file size limits.
+      required:
+        - upload_url
+        - storage_uri
+        - expires_at
+        - required_headers
+
+```
+
+## SDK Code Examples
+
+```python
+import requests
+
+url = "https://api.ltx.video/v1/upload"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"
+}
+
+response = requests.post(url, headers=headers)
+upload_info = response.json()
+
+# Use the signed URL to upload your file
+upload_url = upload_info["upload_url"]
+storage_uri = upload_info["storage_uri"]  # Use this in subsequent API requests
+required_headers = upload_info["required_headers"]
+
+with open("my-video.mp4", "rb") as f:
+    requests.put(
+        upload_url,
+        data=f,
+        headers={
+            "Content-Type": "video/mp4",
+            **required_headers
+        }
+    )
+
+```
+
+```typescript
+const url = "https://api.ltx.video/v1/upload";
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY"
+  }
+});
+
+const uploadInfo = await response.json();
+
+// Use the signed URL to upload your file
+const uploadUrl = uploadInfo.upload_url;
+const storageUri = uploadInfo.storage_uri; // Use this in subsequent API requests
+const requiredHeaders = uploadInfo.required_headers;
+
+const fileBuffer = await fs.promises.readFile("my-video.mp4");
+await fetch(uploadUrl, {
+  method: "PUT",
+  body: fileBuffer,
+  headers: {
+    "Content-Type": "video/mp4",
+    ...requiredHeaders
+  }
+});
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"io"
+)
+
+func main() {
+
+	url := "https://api.ltx.video/v1/upload"
+
+	req, _ := http.NewRequest("POST", url, nil)
+
+	req.Header.Add("Authorization", "Bearer <token>")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+
+}
+```
+
+```java
+HttpResponse<String> response = Unirest.post("https://api.ltx.video/v1/upload")
+  .header("Authorization", "Bearer <token>")
+  .asString();
+```
+
+
+
+
+# Generate video from text
+
+POST https://api.ltx.video/v1/text-to-video
+Content-Type: application/json
+
+Generate a video from a text prompt using AI models.
+
+Reference: https://docs.ltx.video/api-documentation/api-reference/video-generation/text-to-video
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.1.1
+info:
+  title: Generate video from text
+  version: endpoint_videoGeneration.textToVideo
+paths:
+  /v1/text-to-video:
+    post:
+      operationId: text-to-video
+      summary: Generate video from text
+      description: Generate a video from a text prompt using AI models.
+      tags:
+        - - subpackage_videoGeneration
+      parameters:
+        - name: Authorization
+          in: header
+          description: API key authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Video generated successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The request is invalid or malformed
+          content: {}
+        '401':
+          description: Authentication failed
+          content: {}
+        '422':
+          description: Content rejected by safety filters
+          content: {}
+        '429':
+          description: Rate limit exceeded
+          content: {}
+        '500':
+          description: An unexpected error occurred
+          content: {}
+        '503':
+          description: Service temporarily unavailable
+          content: {}
+        '504':
+          description: Request timeout
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextToVideoRequest'
+components:
+  schemas:
+    TextToVideoRequestModel:
+      type: string
+      enum:
+        - value: ltx-2-fast
+        - value: ltx-2-pro
+    TextToVideoRequestCameraMotion:
+      type: string
+      enum:
+        - value: dolly_in
+        - value: dolly_out
+        - value: dolly_left
+        - value: dolly_right
+        - value: jib_up
+        - value: jib_down
+        - value: static
+        - value: focus_shift
+    TextToVideoRequest:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: Text prompt describing the desired video content
+        model:
+          $ref: '#/components/schemas/TextToVideoRequestModel'
+          description: >-
+            Model to use for generation. See [Supported Models](/models) for
+            details.
+        duration:
+          type: integer
+          description: >-
+            Video duration in seconds. See [Supported Models](/models) for
+            available durations per model.
+        fps:
+          type: integer
+          default: 25
+          description: >-
+            Frame rate in frames per second. See [Supported Models](/models) for
+            available FPS per model and resolution.
+        resolution:
+          type: string
+          description: >-
+            Output video resolution. See [Supported Models](/models) for
+            available resolutions per model.
+        generate_audio:
+          type: boolean
+          default: true
+          description: >-
+            Generate audio for the video. When true, the generated video will
+            include AI-generated audio matching the scene. When false, only
+            silent video is generated.
+        camera_motion:
+          $ref: '#/components/schemas/TextToVideoRequestCameraMotion'
+          description: Apply camera motion effects to the generated video.
+      required:
+        - prompt
+        - model
+        - duration
+        - resolution
+
+```
+
+## SDK Code Examples
+
+```python
+import requests
+
+url = "https://api.ltx.video/v1/text-to-video"
+
+payload = {
+    "prompt": "A majestic eagle soaring through clouds at sunset",
+    "model": "ltx-2-pro",
+    "duration": 8,
+    "resolution": "1920x1080"
+}
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+# Save the video file
+with open("generated_video.mp4", "wb") as f:
+    f.write(response.content)
+
+```
+
+```typescript
+const url = "https://api.ltx.video/v1/text-to-video";
+
+const payload = {
+  prompt: "A majestic eagle soaring through clouds at sunset",
+  model: "ltx-2-pro",
+  duration: 8,
+  resolution: "1920x1080"
+};
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+// Save the video file
+const buffer = await response.arrayBuffer();
+const fs = require('fs');
+fs.writeFileSync("generated_video.mp4", Buffer.from(buffer));
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"net/http"
+	"io"
+)
+
+func main() {
+
+	url := "https://api.ltx.video/v1/text-to-video"
+
+	payload := strings.NewReader("{\n  \"prompt\": \"A majestic eagle soaring through clouds at sunset\",\n  \"model\": \"ltx-2-pro\",\n  \"duration\": 8,\n  \"resolution\": \"1920x1080\"\n}")
+
+	req, _ := http.NewRequest("POST", url, payload)
+
+	req.Header.Add("Authorization", "Bearer <token>")
+	req.Header.Add("Content-Type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+
+}
+```
+
+```java
+HttpResponse<String> response = Unirest.post("https://api.ltx.video/v1/text-to-video")
+  .header("Authorization", "Bearer <token>")
+  .header("Content-Type", "application/json")
+  .body("{\n  \"prompt\": \"A majestic eagle soaring through clouds at sunset\",\n  \"model\": \"ltx-2-pro\",\n  \"duration\": 8,\n  \"resolution\": \"1920x1080\"\n}")
+  .asString();
+```
+
+
+# Generate video from image
+
+POST https://api.ltx.video/v1/image-to-video
+Content-Type: application/json
+
+Transform a static image into a dynamic video. Provide an image and text prompt to guide the AI generation process.
+
+Reference: https://docs.ltx.video/api-documentation/api-reference/video-generation/image-to-video
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.1.1
+info:
+  title: Generate video from image
+  version: endpoint_videoGeneration.imageToVideo
+paths:
+  /v1/image-to-video:
+    post:
+      operationId: image-to-video
+      summary: Generate video from image
+      description: >-
+        Transform a static image into a dynamic video. Provide an image and text
+        prompt to guide the AI generation process.
+      tags:
+        - - subpackage_videoGeneration
+      parameters:
+        - name: Authorization
+          in: header
+          description: API key authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Video generated successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The request is invalid or malformed
+          content: {}
+        '401':
+          description: Authentication failed
+          content: {}
+        '422':
+          description: Content rejected by safety filters
+          content: {}
+        '429':
+          description: Rate limit exceeded
+          content: {}
+        '500':
+          description: An unexpected error occurred
+          content: {}
+        '503':
+          description: Service temporarily unavailable
+          content: {}
+        '504':
+          description: Request timeout
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageToVideoRequest'
+components:
+  schemas:
+    ImageToVideoRequestModel:
+      type: string
+      enum:
+        - value: ltx-2-fast
+        - value: ltx-2-pro
+    ImageToVideoRequestCameraMotion:
+      type: string
+      enum:
+        - value: dolly_in
+        - value: dolly_out
+        - value: dolly_left
+        - value: dolly_right
+        - value: jib_up
+        - value: jib_down
+        - value: static
+        - value: focus_shift
+    ImageToVideoRequest:
+      type: object
+      properties:
+        image_uri:
+          type: string
+          description: >-
+            Image to be used as the first frame of the video. See [Input
+            Formats](/input-formats#image-input) for supported formats and size
+            limits.
+        prompt:
+          type: string
+          description: >-
+            Text description of how the image should be animated, can relate to
+            the details in the image
+        model:
+          $ref: '#/components/schemas/ImageToVideoRequestModel'
+          description: >-
+            Model to use for generation. See [Supported Models](/models) for
+            details.
+        duration:
+          type: integer
+          description: >-
+            Video duration in seconds. See [Supported Models](/models) for
+            available durations per model.
+        fps:
+          type: integer
+          default: 25
+          description: >-
+            Frame rate in frames per second. See [Supported Models](/models) for
+            available FPS per model and resolution.
+        resolution:
+          type: string
+          description: >-
+            Output video resolution. See [Supported Models](/models) for
+            available resolutions per model.
+        generate_audio:
+          type: boolean
+          default: true
+          description: >-
+            Generate audio for the video. When true, the generated video will
+            include AI-generated audio matching the scene. When false, only
+            silent video is generated.
+        camera_motion:
+          $ref: '#/components/schemas/ImageToVideoRequestCameraMotion'
+          description: Apply camera motion effects to the generated video.
+      required:
+        - image_uri
+        - prompt
+        - model
+        - duration
+        - resolution
+
+```
+
+## SDK Code Examples
+
+```python
+import requests
+
+url = "https://api.ltx.video/v1/image-to-video"
+
+payload = {
+    "image_uri": "https://example.com/sunset.jpg",
+    "prompt": "Clouds drifting across the sky as the sun sets slowly",
+    "model": "ltx-2-pro",
+    "duration": 8,
+    "resolution": "1920x1080"
+}
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+# Save the video file
+with open("generated_video.mp4", "wb") as f:
+    f.write(response.content)
+
+```
+
+```typescript
+const url = "https://api.ltx.video/v1/image-to-video";
+
+const payload = {
+  image_uri: "https://example.com/sunset.jpg",
+  prompt: "Clouds drifting across the sky as the sun sets slowly",
+  model: "ltx-2-pro",
+  duration: 8,
+  resolution: "1920x1080"
+};
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+// Save the video file
+const buffer = await response.arrayBuffer();
+const fs = require('fs');
+fs.writeFileSync("generated_video.mp4", Buffer.from(buffer));
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"net/http"
+	"io"
+)
+
+func main() {
+
+	url := "https://api.ltx.video/v1/image-to-video"
+
+	payload := strings.NewReader("{\n  \"image_uri\": \"https://example.com/sunset.jpg\",\n  \"prompt\": \"Clouds drifting across the sky as the sun sets slowly\",\n  \"model\": \"ltx-2-pro\",\n  \"duration\": 8,\n  \"resolution\": \"1920x1080\"\n}")
+
+	req, _ := http.NewRequest("POST", url, payload)
+
+	req.Header.Add("Authorization", "Bearer <token>")
+	req.Header.Add("Content-Type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+
+}
+```
+
+```java
+HttpResponse<String> response = Unirest.post("https://api.ltx.video/v1/image-to-video")
+  .header("Authorization", "Bearer <token>")
+  .header("Content-Type", "application/json")
+  .body("{\n  \"image_uri\": \"https://example.com/sunset.jpg\",\n  \"prompt\": \"Clouds drifting across the sky as the sun sets slowly\",\n  \"model\": \"ltx-2-pro\",\n  \"duration\": 8,\n  \"resolution\": \"1920x1080\"\n}")
+  .asString();
+```
+
+
+
+# Generate video from audio
+
+POST https://api.ltx.video/v1/audio-to-video
+Content-Type: application/json
+
+Generate a video from an audio file, optionally with an image and prompt using AI models. Output video is 25 fps.
+
+Reference: https://docs.ltx.video/api-documentation/api-reference/video-generation/audio-to-video
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.1.1
+info:
+  title: Generate video from audio
+  version: endpoint_videoGeneration.audioToVideo
+paths:
+  /v1/audio-to-video:
+    post:
+      operationId: audio-to-video
+      summary: Generate video from audio
+      description: >-
+        Generate a video from an audio file, optionally with an image and prompt
+        using AI models. Output video is 25 fps.
+      tags:
+        - - subpackage_videoGeneration
+      parameters:
+        - name: Authorization
+          in: header
+          description: API key authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Video generated successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The request is invalid or malformed
+          content: {}
+        '401':
+          description: Authentication failed
+          content: {}
+        '422':
+          description: Content rejected by safety filters
+          content: {}
+        '429':
+          description: Rate limit exceeded
+          content: {}
+        '500':
+          description: An unexpected error occurred
+          content: {}
+        '503':
+          description: Service temporarily unavailable
+          content: {}
+        '504':
+          description: Request timeout
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudioToVideoRequest'
+components:
+  schemas:
+    AudioToVideoRequestModel:
+      type: string
+      enum:
+        - value: ltx-2-pro
+      default: ltx-2-pro
+    AudioToVideoRequest:
+      type: object
+      properties:
+        audio_uri:
+          type: string
+          description: >-
+            Audio file to be used as the soundtrack for the video. See [Input
+            Formats](/input-formats#audio-input) for supported formats and size
+            limits.
+        image_uri:
+          type: string
+          description: >-
+            Input image to be used as the first frame of the video. Required if
+            prompt is not provided. See [Input
+            Formats](/input-formats#image-input) for supported formats and size
+            limits.
+        prompt:
+          type: string
+          description: >-
+            Text description of how the video should be generated. Required if
+            image_uri is not provided. Can be empty string when image_uri is
+            provided. If image_uri is provided, this describes how the image
+            should be animated. If no image_uri is provided, this describes the
+            video content.
+        resolution:
+          type: string
+          default: 1920x1080
+          description: >-
+            The resolution of the generated video in WIDTHxHEIGHT format.
+            Currently only 1920x1080 is supported.
+        guidance_scale:
+          type: number
+          format: double
+          description: >-
+            Optional guidance scale (also known as CFG) for video generation.
+            Higher values make the output more closely follow the prompt but may
+            reduce quality. Defaults to 5 for text-to-video, or 9 when providing
+            an image.
+        model:
+          $ref: '#/components/schemas/AudioToVideoRequestModel'
+          description: >
+            Model to use for video generation. Currently only `ltx-2-pro` is
+            supported.
+      required:
+        - audio_uri
+
+```
+
+## SDK Code Examples
+
+```python
+import requests
+
+url = "https://api.ltx.video/v1/audio-to-video"
+
+payload = {
+    "audio_uri": "https://example.com/audio.wav",
+    "image_uri": "https://example.com/image.jpg",
+    "prompt": "A beautiful sunset over mountains",
+    "resolution": "1920x1080"
+}
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+# Save the video file
+with open("generated_video.mp4", "wb") as f:
+    f.write(response.content)
+
+```
+
+```typescript
+const url = "https://api.ltx.video/v1/audio-to-video";
+
+const payload = {
+  audio_uri: "https://example.com/audio.wav",
+  image_uri: "https://example.com/image.jpg",
+  prompt: "A beautiful sunset over mountains",
+  resolution: "1920x1080"
+};
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+// Save the video file
+const buffer = await response.arrayBuffer();
+const fs = require('fs');
+fs.writeFileSync("generated_video.mp4", Buffer.from(buffer));
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"net/http"
+	"io"
+)
+
+func main() {
+
+	url := "https://api.ltx.video/v1/audio-to-video"
+
+	payload := strings.NewReader("{\n  \"audio_uri\": \"https://example.com/audio.wav\",\n  \"image_uri\": \"https://example.com/image.jpg\",\n  \"prompt\": \"A beautiful sunset over mountains\",\n  \"resolution\": \"1920x1080\"\n}")
+
+	req, _ := http.NewRequest("POST", url, payload)
+
+	req.Header.Add("Authorization", "Bearer <token>")
+	req.Header.Add("Content-Type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+
+}
+```
+
+```java
+HttpResponse<String> response = Unirest.post("https://api.ltx.video/v1/audio-to-video")
+  .header("Authorization", "Bearer <token>")
+  .header("Content-Type", "application/json")
+  .body("{\n  \"audio_uri\": \"https://example.com/audio.wav\",\n  \"image_uri\": \"https://example.com/image.jpg\",\n  \"prompt\": \"A beautiful sunset over mountains\",\n  \"resolution\": \"1920x1080\"\n}")
+  .asString();
+```
+
+
+# Retake video section
+
+POST https://api.ltx.video/v1/retake
+Content-Type: application/json
+
+Edit a specific section of a video by replacing audio, video, or both using AI generation.
+
+The edited section is defined by the `start_time` and `duration` parameters.
+
+
+Reference: https://docs.ltx.video/api-documentation/api-reference/video-generation/retake
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.1.1
+info:
+  title: Retake video section
+  version: endpoint_videoGeneration.retake
+paths:
+  /v1/retake:
+    post:
+      operationId: retake
+      summary: Retake video section
+      description: >
+        Edit a specific section of a video by replacing audio, video, or both
+        using AI generation.
+
+
+        The edited section is defined by the `start_time` and `duration`
+        parameters.
+      tags:
+        - - subpackage_videoGeneration
+      parameters:
+        - name: Authorization
+          in: header
+          description: API key authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Video edited successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: The request is invalid or malformed
+          content: {}
+        '401':
+          description: Authentication failed
+          content: {}
+        '422':
+          description: Content rejected by safety filters
+          content: {}
+        '429':
+          description: Rate limit exceeded
+          content: {}
+        '500':
+          description: An unexpected error occurred
+          content: {}
+        '503':
+          description: Service temporarily unavailable
+          content: {}
+        '504':
+          description: Request timeout
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditVideoRequest'
+components:
+  schemas:
+    EditVideoRequestMode:
+      type: string
+      enum:
+        - value: replace_audio
+        - value: replace_video
+        - value: replace_audio_and_video
+      default: replace_audio_and_video
+    EditVideoRequestModel:
+      type: string
+      enum:
+        - value: ltx-2-pro
+      default: ltx-2-pro
+    EditVideoRequest:
+      type: object
+      properties:
+        video_uri:
+          type: string
+          description: >
+            Input video for editing. See [Input
+            Formats](/input-formats#video-input) for supported formats and
+            codecs.
+
+
+            - Maximum resolution: 3840x2160 (4K)
+
+            - Maximum duration: 21 seconds
+
+            - Frame count: minimum 73 (around 3 seconds in 24fps), maximum 505
+            (around 21 seconds in 24fps)
+        prompt:
+          type: string
+          description: |
+            Describing what needs to happen in the generated video in a section
+            defined by `start_time` and `duration`.
+        start_time:
+          type: number
+          format: double
+          description: >
+            Start time in seconds, defines the section to be edited in the input
+            video.
+
+
+            The section defined by `start_time` and `duration` should be within
+            the duration of the input video.
+
+            If the section extends beyond the duration of the video, it will be
+            clamped to the video duration.
+        duration:
+          type: number
+          format: double
+          description: >
+            Duration in seconds, defines the duration of the section to be
+            edited
+
+            in the input video. Must be at least 2 seconds.
+
+
+            The section defined by `start_time` and `duration` should be within
+            the duration of the input video.
+
+            If the section extends beyond the duration of the video, it will be
+            clamped to the video duration.
+        mode:
+          $ref: '#/components/schemas/EditVideoRequestMode'
+          description: |
+            Can be any of the following:
+            - `replace_audio` - Replace only the audio track
+            - `replace_video` - Replace only the video track
+            - `replace_audio_and_video` - Replace both audio and video tracks
+
+            The default value is `replace_audio_and_video` if not specified.
+        model:
+          $ref: '#/components/schemas/EditVideoRequestModel'
+          description: >
+            Model to use for video generation. Currently only `ltx-2-pro` is
+            supported.
+      required:
+        - video_uri
+        - start_time
+        - duration
+
+```
+
+## SDK Code Examples
+
+```python
+import requests
+
+url = "https://api.ltx.video/v1/retake"
+
+payload = {
+    "video_uri": "https://example.com/input.mp4",
+    "prompt": "A dramatic explosion with bright orange flames",
+    "start_time": 0,
+    "duration": 5,
+    "mode": "replace_audio_and_video"
+}
+
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+# Save the video file
+with open("edited_video.mp4", "wb") as f:
+    f.write(response.content)
+
+```
+
+```typescript
+const url = "https://api.ltx.video/v1/retake";
+
+const payload = {
+  video_uri: "https://example.com/input.mp4",
+  prompt: "A dramatic explosion with bright orange flames",
+  start_time: 0,
+  duration: 5,
+  mode: "replace_audio_and_video"
+};
+
+const response = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+// Save the video file
+const buffer = await response.arrayBuffer();
+const fs = require('fs');
+fs.writeFileSync("edited_video.mp4", Buffer.from(buffer));
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+	"net/http"
+	"io"
+)
+
+func main() {
+
+	url := "https://api.ltx.video/v1/retake"
+
+	payload := strings.NewReader("{\n  \"video_uri\": \"https://example.com/input.mp4\",\n  \"start_time\": 0,\n  \"duration\": 5,\n  \"prompt\": \"A dramatic explosion with bright orange flames\",\n  \"mode\": \"replace_audio_and_video\"\n}")
+
+	req, _ := http.NewRequest("POST", url, payload)
+
+	req.Header.Add("Authorization", "Bearer <token>")
+	req.Header.Add("Content-Type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+
+}
+```
+
+```java
+HttpResponse<String> response = Unirest.post("https://api.ltx.video/v1/retake")
+  .header("Authorization", "Bearer <token>")
+  .header("Content-Type", "application/json")
+  .body("{\n  \"video_uri\": \"https://example.com/input.mp4\",\n  \"start_time\": 0,\n  \"duration\": 5,\n  \"prompt\": \"A dramatic explosion with bright orange flames\",\n  \"mode\": \"replace_audio_and_video\"\n}")
+  .asString();
+```

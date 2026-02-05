@@ -1,0 +1,75 @@
+# Meme Studio API
+
+## Overview
+
+Meme Studio supports **image** (Gemini Flash 2.5 / Pro, Reve AI), **video** (LTX Studio), and **GIF** (LTX Studio + FFmpeg). DALL-E is not used.
+
+- **Images:** Google Gemini (Flash or Pro) or Reve AI. At least one of `GOOGLE_GEMINI_API_KEY` or `REVE_API_KEY` must be set.
+- **Video / GIF:** LTX Studio (LTX-2). `LTX_API_KEY` required. GIF is generated as a short video then converted with FFmpeg (optional; if FFmpeg is not on PATH, use format `video` instead of `gif`).
+
+## Environment
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GOOGLE_GEMINI_API_KEY` | For Gemini images | Google AI Studio API key for image generation (Flash 2.5 / Pro). |
+| `REVE_API_KEY` | For Reve images | Reve AI API key for image generation. |
+| `LTX_API_KEY` | For video/GIF | LTX Studio API key (video/GIF generation). |
+| FFmpeg on PATH | For GIF only | Required only when `format: 'gif'` is used; otherwise use `format: 'video'`. |
+
+At least one of `GOOGLE_GEMINI_API_KEY` or `REVE_API_KEY` must be set for image generation. Both can be set; the client chooses via `imageProvider`.
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/meme/templates` | List crypto meme templates. |
+| GET | `/api/meme/styles` | List supported meme styles (e.g. Classic, DeFi, NGMI). |
+| GET | `/api/meme/providers` | List image providers: `[{ value, label }]` (Gemini, Reve). |
+| POST | `/api/meme/generate` | Generate a meme. Body and response below. |
+| GET | `/api/meme/file/:filename` | Serve a generated file (image, video, or GIF) by filename. |
+
+## POST /api/meme/generate
+
+**Request body**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `idea` | string | Yes | Meme idea or caption (max length enforced server-side). |
+| `format` | string | No | `'image'` (default), `'video'`, or `'gif'`. |
+| `style` | string | No | Meme style (e.g. `'Classic'`). |
+| `imageProvider` | string | No | `'gemini'` (default) or `'reve'`. Used only when `format === 'image'`. |
+| `geminiModel` | string | No | `'flash'` (default) or `'pro'`. Used only when `imageProvider === 'gemini'`. |
+| `templateId` | string | No | Template id (e.g. `'drake'`, `'custom'`). |
+| `topText` | string | No | Top overlay text (frontend overlay only). |
+| `bottomText` | string | No | Bottom overlay text (frontend overlay only). |
+| `referenceUrl` | string | No | URL of reference image/video (e.g. for image-to-video). |
+| `referenceType` | string | No | `'image'`, `'gif'`, or `'video'`. |
+
+**Response**
+
+```json
+{ "url": "<string>", "format": "<string>" }
+```
+
+- `url`: Either a full URL (e.g. Reve image) or a **relative** path `/api/meme/file/<filename>` for Gemini images and for all video/GIF. The frontend must resolve relative URLs by prefixing with the backend base URL (e.g. `BASE + url`) for display and download.
+- `format`: `'image'`, `'video'`, or `'gif'`.
+
+**Example request**
+
+```json
+{
+  "idea": "Crypto trader checking portfolio at 3am",
+  "format": "image",
+  "style": "Classic",
+  "imageProvider": "gemini",
+  "geminiModel": "flash"
+}
+```
+
+## GET /api/meme/file/:filename
+
+Serves a generated file from the backend `generated/` directory. Filename must match safe pattern (e.g. `uuid.png`, `uuid.mp4`, `uuid.gif`). Response is the raw file with appropriate `Content-Type` (image/png, image/gif, video/mp4, etc.).
+
+## Frontend
+
+The app uses the endpoints above: it loads templates, styles, and providers; sends `imageProvider` and `geminiModel` when generating images; and resolves any relative `url` (e.g. `/api/meme/file/...`) against the backend base URL for preview and download. Preview renders a `<video>` for video, an `<img>` for GIF, and an image with optional text overlay for static images.
