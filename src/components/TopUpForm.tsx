@@ -11,7 +11,7 @@ import type { TokenConfig } from '@/lib/api';
 import { Wallet, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 
 const LIKA_MINT = '8vZfpUYx4SixbDa9gt3sVSnVT5sdvwrb7cERixR1pump';
-const JUPITER_BUY_LIKA_URL = `https://jup.ag/swap/SOL-${LIKA_MINT}`;
+const PUMP_BUY_LIKA_URL = `https://amm.pump.fun/swap?outputMint=${LIKA_MINT}`;
 
 interface TopUpFormProps {
   walletAddress: string;
@@ -27,7 +27,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<TokenConfig | null>(null);
-  const [onChainBalance, setOnChainBalance] = useState<number | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showPasteTx, setShowPasteTx] = useState(false);
   const [txHash, setTxHash] = useState('');
@@ -44,32 +43,9 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     }
   }, []);
 
-  const fetchOnChainBalance = useCallback(async () => {
-    if (!publicKey || !config) return;
-    try {
-      const mintPk = new PublicKey(config.tokenMint);
-      const userAta = await getAssociatedTokenAddress(mintPk, publicKey);
-      const info = await connection.getTokenAccountBalance(userAta);
-      const decimals = config.tokenDecimals;
-      setOnChainBalance(Number(info.value.amount) / Math.pow(10, decimals));
-    } catch {
-      setOnChainBalance(0);
-    }
-  }, [publicKey, config, connection]);
-
   useEffect(() => {
     fetchConfig();
   }, [fetchConfig]);
-
-  useEffect(() => {
-    if (config && publicKey) fetchOnChainBalance();
-  }, [config, publicKey, fetchOnChainBalance]);
-
-  const setMaxAmount = useCallback(() => {
-    if (onChainBalance != null && onChainBalance > 0) {
-      setAmount(String(onChainBalance));
-    }
-  }, [onChainBalance]);
 
   const handlePayWithWallet = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,10 +56,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     }
     if (!config || !publicKey || !sendTransaction) {
       setMessage({ type: 'error', text: 'Wallet or config not ready.' });
-      return;
-    }
-    if (onChainBalance != null && amt > onChainBalance) {
-      setMessage({ type: 'error', text: 'Insufficient LIKA balance. Buy LIKA first or reduce amount.' });
       return;
     }
 
@@ -123,18 +95,12 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
       toast.success(`${amt.toFixed(2)} LIKA deposited.`);
       setAmount('');
       onSuccess?.();
-      fetchOnChainBalance();
     } catch (err: unknown) {
       const msg =
         err && typeof err === 'object' && 'message' in err
           ? String((err as { message: string }).message)
           : 'Transaction failed.';
-      const isReject = /reject|denied|cancelled/i.test(msg);
-      const text = isReject
-        ? 'Transaction was rejected.'
-        : msg.includes('Insufficient')
-          ? 'Insufficient LIKA balance. Buy LIKA first or reduce amount.'
-          : msg;
+      const text = /reject|denied|cancelled/i.test(msg) ? 'Transaction was rejected.' : msg;
       setMessage({ type: 'error', text });
       toast.error(text);
     } finally {
@@ -183,7 +149,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   };
 
   const openBuyLika = () => {
-    window.open(JUPITER_BUY_LIKA_URL, '_blank', 'noopener,noreferrer');
+    window.open(PUMP_BUY_LIKA_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -209,18 +175,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
 
       {config && (
         <>
-          {onChainBalance !== null && (
-            <p
-              className="text-xs mb-2"
-              style={{
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text-opacity-70)',
-              }}
-            >
-              Wallet LIKA balance: {onChainBalance.toFixed(2)}
-            </p>
-          )}
-
           <form onSubmit={handlePayWithWallet} className="space-y-4">
             <div>
               <label
@@ -232,26 +186,16 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
               >
                 Amount (LIKA) <span style={{ color: 'var(--color-error)' }}>*</span>
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0"
-                  className="input flex-1"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                />
-                <button
-                  type="button"
-                  onClick={setMaxAmount}
-                  className="btn-secondary text-xs"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  Max
-                </button>
-              </div>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0"
+                className="input w-full"
+                style={{ fontFamily: "'Times New Roman', Times, serif" }}
+              />
             </div>
             {message && (
               <p
@@ -279,16 +223,17 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
             </button>
           </form>
 
-          {(onChainBalance === null || onChainBalance === 0) && (
+          <p className="text-xs mt-3" style={{ color: 'var(--text-opacity-60)' }}>
+            Don’t have LIKA?{' '}
             <button
               type="button"
               onClick={openBuyLika}
-              className="w-full btn-secondary mt-3 flex items-center justify-center gap-2"
-              style={{ fontFamily: "'Times New Roman', Times, serif" }}
+              className="underline focus:outline-none"
+              style={{ color: 'var(--accent-primary)' }}
             >
-              Buy LIKA on Jupiter
+              Buy LIKA on Pump.fun
             </button>
-          )}
+          </p>
 
           <div className="mt-4 border-t pt-4" style={{ borderColor: 'var(--border-opacity-10)' }}>
             <button
