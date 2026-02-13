@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token';
+import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
@@ -119,7 +119,8 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
           treasuryAtaPk,
           treasuryWalletPk,
           mintPk,
-          tokenProgramPk
+          tokenProgramPk,
+          ASSOCIATED_TOKEN_PROGRAM_ID
         )
       );
       tx.add(
