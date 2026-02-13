@@ -198,6 +198,18 @@ export const getUsageHistory = async (walletAddress: string, limit = 50) => {
   return response.data;
 };
 
+/** Token config for building deposit transfer (treasury ATA, mint, decimals). */
+export interface TokenConfig {
+  treasuryWallet: string;
+  treasuryAta: string;
+  tokenMint: string;
+  tokenDecimals: number;
+}
+export const getTokenConfig = async (): Promise<TokenConfig> => {
+  const response = await api.get<TokenConfig>('/token/config');
+  return response.data;
+};
+
 /** Record a token deposit after on-chain transfer. Requires verified txHash. */
 export interface RecordDepositRequest {
   walletAddress: string;
@@ -206,6 +218,12 @@ export interface RecordDepositRequest {
 }
 export const recordDeposit = async (payload: RecordDepositRequest) => {
   const response = await api.post('/token/deposit', payload);
+  return response.data;
+};
+
+/** Record a deposit after user paid to treasury (transfer to treasury). */
+export const recordDepositPay = async (payload: RecordDepositRequest) => {
+  const response = await api.post('/token/deposit/pay', payload);
   return response.data;
 };
 
