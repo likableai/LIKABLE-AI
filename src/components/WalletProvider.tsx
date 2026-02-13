@@ -27,11 +27,10 @@ export const SolanaWalletProvider: FC<SolanaWalletProviderProps> = ({ children }
     ? WalletAdapterNetwork.Testnet
     : WalletAdapterNetwork.Mainnet;
 
-  // You can also provide a custom RPC endpoint
+  // RPC endpoint: use env or official mainnet (403 = RPC blocks requests; use a free key from helius.dev or similar)
   const endpoint = useMemo(() => {
-    if (process.env.NEXT_PUBLIC_SOLANA_RPC_URL) {
-      return process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
-    }
+    const envUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL?.trim();
+    if (envUrl) return envUrl;
     return clusterApiUrl(network);
   }, [network]);
 

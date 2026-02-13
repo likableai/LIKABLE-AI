@@ -221,8 +221,13 @@ export const recordDeposit = async (payload: RecordDepositRequest) => {
   return response.data;
 };
 
-/** Record a deposit after user paid to treasury (transfer to treasury). */
-export const recordDepositPay = async (payload: RecordDepositRequest) => {
+/** Record a deposit after user paid to treasury. Amount is read from chain if omitted. */
+export interface RecordDepositPayRequest {
+  walletAddress: string;
+  txHash: string;
+  amount?: number;
+}
+export const recordDepositPay = async (payload: RecordDepositPayRequest) => {
   const response = await api.post('/token/deposit/pay', payload);
   return response.data;
 };

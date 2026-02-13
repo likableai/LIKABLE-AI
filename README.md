@@ -55,6 +55,8 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 ```
 
+If **Pay with wallet** fails with "403" or "failed to get recent blockhash", the RPC is blocking requests. Use a working RPC: keep the URL above (official mainnet), or get a free API key from [Helius](https://www.helius.dev/) and set `NEXT_PUBLIC_SOLANA_RPC_URL=https://mainnet.helius-rpc.com/?api_key=YOUR_KEY`.
+
 4. **Run the application**
 
 ```bash
