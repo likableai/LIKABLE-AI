@@ -27,11 +27,17 @@ export const SolanaWalletProvider: FC<SolanaWalletProviderProps> = ({ children }
     ? WalletAdapterNetwork.Testnet
     : WalletAdapterNetwork.Mainnet;
 
-  // RPC endpoint: use env or official mainnet (403 = RPC blocks requests; use a free key from helius.dev or similar)
+  // RPC endpoint: use env or official mainnet. Helius requires api-key (hyphen), not api_key.
   const endpoint = useMemo(() => {
-    const envUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL?.trim();
-    if (envUrl) return envUrl;
-    return clusterApiUrl(network);
+    let envUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL?.trim();
+    if (!envUrl) return clusterApiUrl(network);
+    const base = envUrl.replace(/\?.*$/, '').replace(/\/+$/, '');
+    if (base.includes('helius-rpc.com') || base.includes('helius.xyz')) {
+      if (/[?&]api_key=/.test(envUrl)) {
+        envUrl = envUrl.replace(/([?&])api_key=([^&]*)/g, '$1api-key=$2');
+      }
+    }
+    return envUrl;
   }, [network]);
 
   // Configure supported wallets
