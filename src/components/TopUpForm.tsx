@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { getAssociatedTokenAddressSync, createTransferCheckedInstruction } from '@solana/spl-token';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
@@ -19,6 +19,22 @@ const PUMP_BUY_LIKA_URL = `https://amm.pump.fun/swap?outputMint=${LIKA_MINT}`;
 function truncateAddress(addr: string, head = 8, tail = 6): string {
   if (addr.length <= head + tail) return addr;
   return `${addr.slice(0, head)}…${addr.slice(-tail)}`;
+}
+
+/** Poll until the transaction is confirmed or timeout. Reduces "transaction not found" when backend verifies. */
+async function waitForConfirmation(
+  connection: Connection,
+  signature: string,
+  timeoutMs: number
+): Promise<void> {
+  const start = Date.now();
+  const interval = 1500;
+  while (Date.now() - start < timeoutMs) {
+    const status = await connection.getSignatureStatus(signature);
+    const confirmationStatus = status?.value?.confirmationStatus;
+    if (confirmationStatus === 'confirmed' || confirmationStatus === 'finalized') return;
+    await new Promise((r) => setTimeout(r, interval));
+  }
 }
 
 interface TopUpFormProps {
@@ -117,6 +133,8 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
       const tx = new Transaction().add(ix);
       const sig = await sendTransaction(tx, connection, { skipPreflight: false });
       setTxHash(sig);
+      setMessage({ type: 'success', text: 'Transaction sent. Waiting for confirmation…' });
+      await waitForConfirmation(connection, sig, 45000);
       setMessage({ type: 'success', text: 'Transaction sent. Verifying…' });
       try {
         await recordDepositPay({

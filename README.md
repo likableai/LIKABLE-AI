@@ -55,7 +55,9 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 ```
 
-If **Pay with wallet** fails with "403" or "failed to get recent blockhash", the RPC is blocking requests. Use a working RPC: keep the URL above (official mainnet), or get a free API key from [Helius](https://www.helius.dev/) and set `NEXT_PUBLIC_SOLANA_RPC_URL=https://mainnet.helius-rpc.com/?api_key=YOUR_KEY`.
+If **Pay with wallet** fails with "403" or "failed to get recent blockhash", the RPC is blocking requests. Use a working RPC: keep the URL above (official mainnet), or get a free API key from [Helius](https://www.helius.dev/) and set `NEXT_PUBLIC_SOLANA_RPC_URL=https://mainnet.helius-rpc.com/?api-key=YOUR_KEY`. **Helius requires `api-key` (hyphen), not `api_key`.**
+
+Backend (e.g. **Render**): set `SOLANA_RPC_URL` to a provider with an API key. The public RPC (`https://api.mainnet-beta.solana.com`) returns **403/429** in production. Use a free tier from [Helius](https://helius.xyz) (e.g. `https://mainnet.helius-rpc.com/?api-key=YOUR_KEY`). **Helius uses `api-key` (hyphen).**
 
 4. **Run the application**
 
