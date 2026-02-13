@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountInstruction, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
@@ -112,17 +112,22 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
           : TOKEN_PROGRAM_ID;
       const userAta = getAssociatedTokenAddressSync(mintPk, publicKey, false, tokenProgramPk);
 
+      // Check if treasury ATA exists; CreateIdempotent causes "incorrect program id" on some wallets/RPCs
+      const treasuryAtaInfo = await connection.getAccountInfo(treasuryAtaPk);
+      const needsCreateAta = !treasuryAtaInfo;
+
       const tx = new Transaction();
-      tx.add(
-        createAssociatedTokenAccountIdempotentInstruction(
-          publicKey,
-          treasuryAtaPk,
-          treasuryWalletPk,
-          mintPk,
-          tokenProgramPk,
-          ASSOCIATED_TOKEN_PROGRAM_ID
-        )
-      );
+      if (needsCreateAta) {
+        tx.add(
+          createAssociatedTokenAccountInstruction(
+            publicKey,
+            treasuryAtaPk,
+            treasuryWalletPk,
+            mintPk,
+            tokenProgramPk
+          )
+        );
+      }
       tx.add(
         createTransferCheckedInstruction(
           userAta,
