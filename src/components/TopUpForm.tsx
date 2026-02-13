@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import { getAssociatedTokenAddressSync, createTransferCheckedInstruction } from '@solana/spl-token';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
 import type { TokenConfig } from '@/lib/api';
 import { Copy, Loader2, ChevronDown, ChevronUp, Wallet } from 'lucide-react';
+
+const LIKA_DECIMALS = 6;
 
 const LIKA_MINT = '8vZfpUYx4SixbDa9gt3sVSnVT5sdvwrb7cERixR1pump';
 /** Canonical treasury wallet — used for pay URL and derived ATA so UI is correct even if backend env is wrong. */
@@ -28,7 +30,8 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   walletAddress,
   onSuccess,
 }) => {
-  const { publicKey } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<TokenConfig | null>(null);
@@ -74,28 +77,84 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     );
   }, [treasuryAtaDisplay, config?.treasuryAta]);
 
-  /** Open wallet via Solana Pay URL. Uses canonical treasury so it works even if backend config is wrong. */
-  const handlePayWithWallet = (e: React.FormEvent) => {
+  /** Send LIKA to treasury via connected wallet; wallet popup opens for approval. */
+  const handlePayWithWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     const amt = amount.trim() ? parseFloat(amount) : NaN;
     if (isNaN(amt) || amt <= 0) {
       setMessage({ type: 'error', text: 'Please enter a valid amount.' });
       return;
     }
-    const params = new URLSearchParams({
-      amount: String(amt),
-      'spl-token': LIKA_MINT,
-      label: 'Likable AI',
-      message: 'Top up balance',
-    });
-    const url = `solana:${TREASURY_WALLET}?${params.toString()}`;
-    toast.info('Opening wallet…');
-    const a = document.createElement('a');
-    a.href = url;
-    a.rel = 'noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (!publicKey) {
+      setMessage({ type: 'error', text: 'Connect your wallet first.' });
+      toast.error('Connect your wallet first.');
+      return;
+    }
+    if (!treasuryAtaDisplay) {
+      setMessage({ type: 'error', text: 'Config not ready.' });
+      return;
+    }
+    const decimals = config?.tokenDecimals ?? LIKA_DECIMALS;
+    const amountRaw = Math.round(amt * 10 ** decimals);
+    if (amountRaw <= 0) {
+      setMessage({ type: 'error', text: 'Amount too small.' });
+      return;
+    }
+    setLoading(true);
+    setMessage(null);
+    try {
+      const mintPk = new PublicKey(LIKA_MINT);
+      const treasuryAtaPk = new PublicKey(treasuryAtaDisplay);
+      const userAta = getAssociatedTokenAddressSync(mintPk, publicKey);
+      const ix = createTransferCheckedInstruction(
+        userAta,
+        mintPk,
+        treasuryAtaPk,
+        publicKey,
+        amountRaw,
+        decimals
+      );
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection, { skipPreflight: false });
+      setTxHash(sig);
+      setMessage({ type: 'success', text: 'Transaction sent. Verifying…' });
+      try {
+        await recordDepositPay({
+          walletAddress: publicKey.toString(),
+          txHash: sig,
+        });
+        setMessage({ type: 'success', text: 'Deposit verified. Your balance has been updated.' });
+        toast.success('Balance credited.');
+        setAmount('');
+        setTxHash('');
+        onSuccess?.();
+      } catch (verifyErr: unknown) {
+        const data = (verifyErr as { response?: { data?: { error?: string; details?: string } } })?.response?.data;
+        if (data?.error === 'Transaction has already been processed') {
+          setMessage({ type: 'success', text: 'Deposit verified. Your balance has been updated.' });
+          toast.success('Balance credited.');
+          setAmount('');
+          setTxHash('');
+          onSuccess?.();
+        } else {
+          setMessage({
+            type: 'error',
+            text: data?.details ?? data?.error ?? 'Transaction sent. If it doesn’t credit, paste the hash below to verify.',
+          });
+          toast.info('Transaction sent. Paste the hash below if balance didn’t update.');
+        }
+      }
+    } catch (err: unknown) {
+      const msg = (err as Error)?.message ?? 'Transaction failed';
+      setMessage({ type: 'error', text: msg });
+      if ((err as Error)?.message?.toLowerCase().includes('reject')) {
+        toast.error('You rejected the transaction.');
+      } else {
+        toast.error(msg);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyTxHash = async (e: React.FormEvent) => {
@@ -255,11 +314,15 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
             )}
             <button
               type="submit"
-              disabled={!amount.trim()}
+              disabled={!amount.trim() || loading}
               className="w-full btn-primary flex items-center justify-center gap-2"
               style={{ fontFamily: "'Times New Roman', Times, serif" }}
             >
-              <Wallet className="w-4 h-4" />
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Wallet className="w-4 h-4" />
+              )}
               Pay with wallet
             </button>
           </form>
