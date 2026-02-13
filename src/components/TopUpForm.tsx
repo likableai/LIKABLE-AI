@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { PublicKey } from '@solana/web3.js';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
@@ -8,6 +10,8 @@ import type { TokenConfig } from '@/lib/api';
 import { Copy, Loader2, ChevronDown, ChevronUp, Wallet } from 'lucide-react';
 
 const LIKA_MINT = '8vZfpUYx4SixbDa9gt3sVSnVT5sdvwrb7cERixR1pump';
+/** Canonical treasury wallet — used for pay URL and derived ATA so UI is correct even if backend env is wrong. */
+const TREASURY_WALLET = '8D54gMG6F4WyYdAYqt8fdcsGJasWEMuayqs6CSPg9SoF';
 const PUMP_BUY_LIKA_URL = `https://amm.pump.fun/swap?outputMint=${LIKA_MINT}`;
 
 function truncateAddress(addr: string, head = 8, tail = 6): string {
@@ -34,6 +38,18 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   const [receiveTxHash, setReceiveTxHash] = useState('');
   const [receiveAmount, setReceiveAmount] = useState('');
 
+  /** Treasury ATA derived from canonical treasury wallet + LIKA mint (so dashboard shows correct address). */
+  const treasuryAtaDisplay = useMemo(() => {
+    try {
+      return getAssociatedTokenAddressSync(
+        new PublicKey(LIKA_MINT),
+        new PublicKey(TREASURY_WALLET)
+      ).toString();
+    } catch {
+      return null;
+    }
+  }, []);
+
   const fetchConfig = useCallback(async () => {
     try {
       const c = await getTokenConfig();
@@ -50,23 +66,20 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   }, [fetchConfig]);
 
   const copyTreasuryAddress = useCallback(() => {
-    if (!config?.treasuryAta) return;
-    navigator.clipboard.writeText(config.treasuryAta).then(
+    const toCopy = treasuryAtaDisplay ?? config?.treasuryAta;
+    if (!toCopy) return;
+    navigator.clipboard.writeText(toCopy).then(
       () => toast.success('Treasury address copied'),
       () => toast.error('Failed to copy')
     );
-  }, [config?.treasuryAta]);
+  }, [treasuryAtaDisplay, config?.treasuryAta]);
 
-  /** Open wallet via Solana Pay URL. Wallet builds and sends the transaction (no dapp RPC). */
+  /** Open wallet via Solana Pay URL. Uses canonical treasury so it works even if backend config is wrong. */
   const handlePayWithWallet = (e: React.FormEvent) => {
     e.preventDefault();
     const amt = amount.trim() ? parseFloat(amount) : NaN;
     if (isNaN(amt) || amt <= 0) {
       setMessage({ type: 'error', text: 'Please enter a valid amount.' });
-      return;
-    }
-    if (!config?.treasuryWallet) {
-      setMessage({ type: 'error', text: 'Config not ready.' });
       return;
     }
     const params = new URLSearchParams({
@@ -75,8 +88,14 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
       label: 'Likable AI',
       message: 'Top up balance',
     });
-    const url = `solana:${config.treasuryWallet}?${params.toString()}`;
-    window.location.href = url;
+    const url = `solana:${TREASURY_WALLET}?${params.toString()}`;
+    toast.info('Opening wallet…');
+    const a = document.createElement('a');
+    a.href = url;
+    a.rel = 'noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const handleVerifyTxHash = async (e: React.FormEvent) => {
@@ -175,13 +194,13 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
         Top up
       </h3>
 
-      {!config && (
+      {!config && !treasuryAtaDisplay && (
         <p className="text-sm mb-4" style={{ color: 'var(--text-opacity-60)' }}>
           Loading…
         </p>
       )}
 
-      {config && (
+      {(config || treasuryAtaDisplay) && (
         <>
           <form onSubmit={handlePayWithWallet} className="space-y-4 mb-4">
             <p
@@ -251,7 +270,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
             </p>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono truncate flex-1" style={{ color: 'var(--text-opacity-70)' }}>
-                {truncateAddress(config.treasuryAta)}
+                {truncateAddress(treasuryAtaDisplay ?? config?.treasuryAta ?? '')}
               </span>
               <button
                 type="button"
