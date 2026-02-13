@@ -34,6 +34,8 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env
 .env.local
+# pumpfun.md contains real API keys and private keys — do not commit
+pumpfun.md
 /likableai-backend
 
 

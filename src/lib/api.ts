@@ -204,6 +204,8 @@ export interface TokenConfig {
   treasuryAta: string;
   tokenMint: string;
   tokenDecimals: number;
+  /** Token program ID (Token or Token-2022) for ATA derivation and transfer */
+  tokenProgram?: string;
 }
 export const getTokenConfig = async (): Promise<TokenConfig> => {
   const response = await api.get<TokenConfig>('/token/config');
