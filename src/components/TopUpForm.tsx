@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token';
-import { Transaction } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
 import type { TokenConfig } from '@/lib/api';
@@ -27,8 +24,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   walletAddress,
   onSuccess,
 }) => {
-  const { publicKey, sendTransaction } = useWallet();
-  const { connection } = useConnection();
+  const { publicKey } = useWallet();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<TokenConfig | null>(null);
@@ -61,71 +57,26 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     );
   }, [config?.treasuryAta]);
 
-  const handlePayWithWallet = async (e: React.FormEvent) => {
+  /** Open wallet via Solana Pay URL. Wallet builds and sends the transaction (no dapp RPC). */
+  const handlePayWithWallet = (e: React.FormEvent) => {
     e.preventDefault();
     const amt = amount.trim() ? parseFloat(amount) : NaN;
     if (isNaN(amt) || amt <= 0) {
       setMessage({ type: 'error', text: 'Please enter a valid amount.' });
       return;
     }
-    if (!config || !publicKey || !sendTransaction) {
-      setMessage({ type: 'error', text: 'Wallet or config not ready.' });
+    if (!config?.treasuryWallet) {
+      setMessage({ type: 'error', text: 'Config not ready.' });
       return;
     }
-    setLoading(true);
-    setMessage(null);
-    try {
-      const mintPk = new PublicKey(config.tokenMint);
-      const treasuryAtaPk = new PublicKey(config.treasuryAta);
-      const userAta = await getAssociatedTokenAddress(mintPk, publicKey);
-      const decimals = config.tokenDecimals;
-      const amountRaw = BigInt(Math.floor(amt * Math.pow(10, decimals)));
-
-      const tx = new Transaction().add(
-        createTransferCheckedInstruction(
-          userAta,
-          mintPk,
-          treasuryAtaPk,
-          publicKey,
-          amountRaw,
-          decimals
-        )
-      );
-
-      const signature = await sendTransaction(tx, connection);
-      const confirmed = await connection.confirmTransaction(signature, 'confirmed');
-      if (confirmed.value.err) {
-        throw new Error('Transaction failed on-chain');
-      }
-
-      await recordDepositPay({
-        walletAddress: publicKey.toString(),
-        amount: amt,
-        txHash: signature,
-      });
-
-      setMessage({ type: 'success', text: 'Deposit successful. Your balance has been updated.' });
-      toast.success(`${amt.toFixed(2)} LIKA deposited.`);
-      setAmount('');
-      onSuccess?.();
-    } catch (err: unknown) {
-      const msg =
-        err && typeof err === 'object' && 'message' in err
-          ? String((err as { message: string }).message)
-          : 'Transaction failed.';
-      let text: string;
-      if (/reject|denied|cancelled/i.test(msg)) {
-        text = 'Transaction was rejected.';
-      } else if (/403|blockhash|Access forbidden|failed to get recent blockhash/i.test(msg)) {
-        text = 'RPC unavailable. Set NEXT_PUBLIC_SOLANA_RPC_URL to a working RPC (e.g. free key from helius.dev).';
-      } else {
-        text = msg;
-      }
-      setMessage({ type: 'error', text });
-      toast.error(text);
-    } finally {
-      setLoading(false);
-    }
+    const params = new URLSearchParams({
+      amount: String(amt),
+      'spl-token': LIKA_MINT,
+      label: 'Likable AI',
+      message: 'Top up balance',
+    });
+    const url = `solana:${config.treasuryWallet}?${params.toString()}`;
+    window.location.href = url;
   };
 
   const handleVerifyTxHash = async (e: React.FormEvent) => {
@@ -249,7 +200,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                 color: 'var(--text-opacity-60)',
               }}
             >
-              Enter amount and click below. Your wallet (Phantom, Solflare, etc.) will open to approve the transaction.
+              Enter amount and click Pay with wallet. Your wallet opens to approve—no RPC or passphrase here. After sending, paste the transaction hash below to credit your balance.
             </p>
             <div>
               <label
@@ -285,16 +236,12 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
             )}
             <button
               type="submit"
-              disabled={loading || !amount.trim()}
+              disabled={!amount.trim()}
               className="w-full btn-primary flex items-center justify-center gap-2"
               style={{ fontFamily: "'Times New Roman', Times, serif" }}
             >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Wallet className="w-4 h-4" />
-              )}
-              {loading ? 'Processing…' : 'Pay with wallet'}
+              <Wallet className="w-4 h-4" />
+              Pay with wallet
             </button>
           </form>
 
