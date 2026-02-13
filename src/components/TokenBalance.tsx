@@ -3,8 +3,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getTokenBalance, getTokenPrice } from '@/lib/api';
-import { Wallet, RefreshCw } from 'lucide-react';
+import { Wallet, RefreshCw, LayoutDashboard, LogOut } from 'lucide-react';
 
 interface TokenBalanceData {
   currentBalance: number;
@@ -14,7 +15,8 @@ interface TokenBalanceData {
 }
 
 export const TokenBalance: React.FC = () => {
-  const { connected, publicKey } = useWallet();
+  const router = useRouter();
+  const { connected, publicKey, disconnect } = useWallet();
   const [balance, setBalance] = useState<TokenBalanceData | null>(null);
   const [tokenPrice, setTokenPrice] = useState<number>(0);
   const [loading, setLoading] = useState(false);
@@ -70,13 +72,24 @@ export const TokenBalance: React.FC = () => {
 
   const usdValue = balance.currentBalance * tokenPrice;
 
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    disconnect().catch(() => {});
+  };
+
   return (
     <div
-      className="card flex flex-col gap-1"
+      role="button"
+      tabIndex={0}
+      onClick={() => router.push('/dashboard')}
+      onKeyDown={(e) => e.key === 'Enter' && router.push('/dashboard')}
+      className="card flex flex-col gap-1 cursor-pointer transition-opacity hover:opacity-90"
       style={{ 
         fontFamily: "'Times New Roman', Times, serif",
         padding: 'var(--space-1-5) var(--space-2-5)'
       }}
+      aria-label="Go to dashboard"
     >
       <div className="flex items-center gap-2">
         <Wallet 
@@ -115,7 +128,10 @@ export const TokenBalance: React.FC = () => {
           </span>
         )}
         <button
-          onClick={fetchBalance}
+          onClick={(e) => {
+            e.stopPropagation();
+            fetchBalance();
+          }}
           disabled={loading}
           className="p-0.5 disabled:opacity-40 transition-all flex items-center justify-center ml-0.5 rounded"
           style={{ 
@@ -130,7 +146,7 @@ export const TokenBalance: React.FC = () => {
         </button>
       </div>
       <div 
-        className="flex items-center gap-2 text-xs"
+        className="flex items-center gap-3 text-xs flex-wrap"
         style={{ 
           fontFamily: "'Times New Roman', Times, serif",
           color: 'var(--text-opacity-60)'
@@ -139,13 +155,35 @@ export const TokenBalance: React.FC = () => {
         <span>{balance.consumedAmount.toFixed(2)} used</span>
         <Link 
           href="/dashboard" 
-          className="transition-colors"
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-1 transition-colors"
           style={{ color: 'var(--text-opacity-60)' }}
           onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text)'}
           onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-opacity-60)'}
         >
-          View history
+          <LayoutDashboard className="w-3 h-3" />
+          Dashboard
         </Link>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-1 transition-colors bg-transparent border-none p-0 cursor-pointer"
+          style={{ 
+            fontFamily: "'Times New Roman', Times, serif",
+            color: 'var(--text-opacity-60)',
+            fontSize: 'inherit'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--text)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--text-opacity-60)';
+          }}
+          aria-label="Log out"
+        >
+          <LogOut className="w-3 h-3" />
+          Logout
+        </button>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync, createTransferCheckedInstruction } from '@solana/spl-token';
+import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountIdempotentInstruction } from '@solana/spl-token';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
@@ -10,11 +10,7 @@ import type { TokenConfig } from '@/lib/api';
 import { Copy, Loader2, ChevronDown, ChevronUp, Wallet } from 'lucide-react';
 
 const LIKA_DECIMALS = 6;
-
-const LIKA_MINT = '8vZfpUYx4SixbDa9gt3sVSnVT5sdvwrb7cERixR1pump';
-/** Canonical treasury wallet — used for pay URL and derived ATA so UI is correct even if backend env is wrong. */
-const TREASURY_WALLET = '8D54gMG6F4WyYdAYqt8fdcsGJasWEMuayqs6CSPg9SoF';
-const PUMP_BUY_LIKA_URL = `https://amm.pump.fun/swap?outputMint=${LIKA_MINT}`;
+const PUMP_BUY_LIKA_URL = (mint: string) => `https://amm.pump.fun/swap?outputMint=${mint}`;
 
 function truncateAddress(addr: string, head = 8, tail = 6): string {
   if (addr.length <= head + tail) return addr;
@@ -57,18 +53,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   const [receiveTxHash, setReceiveTxHash] = useState('');
   const [receiveAmount, setReceiveAmount] = useState('');
 
-  /** Treasury ATA derived from canonical treasury wallet + LIKA mint (so dashboard shows correct address). */
-  const treasuryAtaDisplay = useMemo(() => {
-    try {
-      return getAssociatedTokenAddressSync(
-        new PublicKey(LIKA_MINT),
-        new PublicKey(TREASURY_WALLET)
-      ).toString();
-    } catch {
-      return null;
-    }
-  }, []);
-
   const fetchConfig = useCallback(async () => {
     try {
       const c = await getTokenConfig();
@@ -85,15 +69,15 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   }, [fetchConfig]);
 
   const copyTreasuryAddress = useCallback(() => {
-    const toCopy = treasuryAtaDisplay ?? config?.treasuryAta;
+    const toCopy = config?.treasuryAta;
     if (!toCopy) return;
     navigator.clipboard.writeText(toCopy).then(
-      () => toast.success('Treasury address copied'),
+      () => toast.success('Treasury LIKA address copied'),
       () => toast.error('Failed to copy')
     );
-  }, [treasuryAtaDisplay, config?.treasuryAta]);
+  }, [config?.treasuryAta]);
 
-  /** Send LIKA to treasury via connected wallet; wallet popup opens for approval. */
+  /** Send LIKA (SPL token) to treasury via connected wallet. Uses backend config for treasury. */
   const handlePayWithWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     const amt = amount.trim() ? parseFloat(amount) : NaN;
@@ -106,11 +90,11 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
       toast.error('Connect your wallet first.');
       return;
     }
-    if (!treasuryAtaDisplay) {
-      setMessage({ type: 'error', text: 'Config not ready.' });
+    if (!config?.treasuryAta || !config?.tokenMint) {
+      setMessage({ type: 'error', text: 'Config not ready. Please wait or refresh.' });
       return;
     }
-    const decimals = config?.tokenDecimals ?? LIKA_DECIMALS;
+    const decimals = config.tokenDecimals ?? LIKA_DECIMALS;
     const amountRaw = Math.round(amt * 10 ** decimals);
     if (amountRaw <= 0) {
       setMessage({ type: 'error', text: 'Amount too small.' });
@@ -119,18 +103,30 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     setLoading(true);
     setMessage(null);
     try {
-      const mintPk = new PublicKey(LIKA_MINT);
-      const treasuryAtaPk = new PublicKey(treasuryAtaDisplay);
+      const mintPk = new PublicKey(config.tokenMint);
+      const treasuryAtaPk = new PublicKey(config.treasuryAta);
+      const treasuryWalletPk = new PublicKey(config.treasuryWallet);
       const userAta = getAssociatedTokenAddressSync(mintPk, publicKey);
-      const ix = createTransferCheckedInstruction(
-        userAta,
-        mintPk,
-        treasuryAtaPk,
-        publicKey,
-        amountRaw,
-        decimals
+
+      const tx = new Transaction();
+      tx.add(
+        createAssociatedTokenAccountIdempotentInstruction(
+          publicKey,
+          treasuryAtaPk,
+          treasuryWalletPk,
+          mintPk
+        )
       );
-      const tx = new Transaction().add(ix);
+      tx.add(
+        createTransferCheckedInstruction(
+          userAta,
+          mintPk,
+          treasuryAtaPk,
+          publicKey,
+          amountRaw,
+          decimals
+        )
+      );
       const sig = await sendTransaction(tx, connection, { skipPreflight: false });
       setTxHash(sig);
       setMessage({ type: 'success', text: 'Transaction sent. Waiting for confirmation…' });
@@ -253,7 +249,8 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
   };
 
   const openBuyLika = () => {
-    window.open(PUMP_BUY_LIKA_URL, '_blank', 'noopener,noreferrer');
+    if (!config?.tokenMint) return;
+    window.open(PUMP_BUY_LIKA_URL(config.tokenMint), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -271,13 +268,13 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
         Top up
       </h3>
 
-      {!config && !treasuryAtaDisplay && (
+      {!config && (
         <p className="text-sm mb-4" style={{ color: 'var(--text-opacity-60)' }}>
           Loading…
         </p>
       )}
 
-      {(config || treasuryAtaDisplay) && (
+      {config && (
         <>
           <form onSubmit={handlePayWithWallet} className="space-y-4 mb-4">
             <p
@@ -296,7 +293,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                 color: 'var(--text-opacity-60)',
               }}
             >
-              Enter amount and click Pay with wallet. Your wallet opens to approve—no RPC or passphrase here. After sending, paste the transaction hash below to credit your balance.
+              You pay in <strong>LIKA</strong> (not SOL). Your wallet opens to approve the transfer. A small SOL fee applies for the transaction. After sending, paste the transaction hash below to credit your balance.
             </p>
             <div>
               <label
@@ -347,11 +344,11 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
 
           <div className="mb-4 pt-3 border-t" style={{ borderColor: 'var(--border-opacity-10)' }}>
             <p className="text-xs mb-2" style={{ color: 'var(--text-opacity-60)' }}>
-              Already sent? Paste the transaction hash to verify and credit.
+              Already sent LIKA? Paste the transaction hash to verify and credit.
             </p>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono truncate flex-1" style={{ color: 'var(--text-opacity-70)' }}>
-                {truncateAddress(treasuryAtaDisplay ?? config?.treasuryAta ?? '')}
+                {truncateAddress(config.treasuryAta)}
               </span>
               <button
                 type="button"
