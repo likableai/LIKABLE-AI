@@ -140,3 +140,21 @@ User wallet (Phantom) → SPL transfer → Treasury ATA
 ```
 
 No creator privileges, no Pump.fun-specific calls—only standard SPL transfers and verification.
+
+---
+
+## 6. Credit System (Balance & Access)
+
+**Credits = tokens converted to USD.** User balance is stored in LIKA tokens; cost is calculated in USD and converted to tokens via the token price (TWAP).
+
+| Concept | Implementation |
+|--------|----------------|
+| **Balance** | `currentBalance` (tokens) in MongoDB |
+| **USD value** | `currentBalance × tokenPrice` (from Jupiter TWAP) |
+| **Deduction** | Chat: after each message. Voice: on session close (by duration) |
+| **Minimum deposit** | `MINIMUM_DEPOSIT_USD` (default $1). User needs `balanceUsd >= min` to access chat/voice |
+| **Zero balance** | User sees 0 tokens and cannot use chat/voice until they deposit |
+
+**Chat**: Cost estimated per message (DeepSeek pricing), deducted after response.  
+**Voice**: Cost per minute (~$0.033), deducted when session closes.  
+**Access gate**: Both chat and voice check `hasMinimumDeposit` and `hasSufficientBalance` before allowing use.

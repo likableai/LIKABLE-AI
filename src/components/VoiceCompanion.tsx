@@ -504,7 +504,8 @@ export const useVoiceCompanion = (options: UseVoiceCompanionOptions = {}): UseVo
         const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Voice service not configured';
         onError?.(errorMessage);
       } else if (err.response?.status === 402) {
-        const errorMessage = err.response?.data?.error || 'Insufficient tokens';
+        const errData = err.response?.data;
+        const errorMessage = errData?.message || errData?.error || 'Insufficient balance. Deposit at least $1 worth of tokens to use voice.';
         onError?.(errorMessage);
       } else {
         const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to start voice session';

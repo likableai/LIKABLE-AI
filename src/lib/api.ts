@@ -176,6 +176,18 @@ export const getTokenBalance = async (walletAddress: string) => {
   return response.data;
 };
 
+/** Balance response includes credit info (USD, min required, canAccess) */
+export interface TokenBalanceData {
+  walletAddress: string;
+  currentBalance: number;
+  depositedAmount: number;
+  consumedAmount: number;
+  lastUpdated: string;
+  balanceUsd?: number;
+  minDepositUsd?: number;
+  canAccess?: boolean;
+}
+
 export const getTokenPrice = async () => {
   const response = await api.get('/token/price');
   return response.data;

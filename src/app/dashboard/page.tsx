@@ -21,6 +21,9 @@ export default function DashboardPage() {
     currentBalance: number;
     depositedAmount: number;
     consumedAmount: number;
+    balanceUsd?: number;
+    minDepositUsd?: number;
+    canAccess?: boolean;
   } | null>(null);
   const [tokenPrice, setTokenPrice] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -130,7 +133,9 @@ export default function DashboardPage() {
     );
   }
 
-  const usdValue = balance ? balance.currentBalance * tokenPrice : 0;
+  const usdValue = balance ? (balance.balanceUsd ?? balance.currentBalance * tokenPrice) : 0;
+  const minUsd = balance?.minDepositUsd ?? 1;
+  const canAccess = balance?.canAccess ?? usdValue >= minUsd;
 
   return (
     <AppLayout>
@@ -173,14 +178,13 @@ export default function DashboardPage() {
                     tokens
                   </span>
                 </p>
-                {usdValue > 0 && (
-                  <p 
-                    className="mt-0.5 text-sm"
-                    style={{ color: 'var(--text-opacity-60)' }}
-                  >
-                    ≈ ${usdValue.toFixed(2)}
-                  </p>
-                )}
+                <p 
+                  className="mt-0.5 text-sm"
+                  style={{ color: canAccess ? 'var(--text-opacity-60)' : 'var(--accent)' }}
+                >
+                  ≈ ${usdValue.toFixed(2)}
+                  {!canAccess && ` (min $${minUsd} to use chat/voice)`}
+                </p>
                 <p 
                   className="mt-2 text-xs"
                   style={{ color: 'var(--text-opacity-50)' }}

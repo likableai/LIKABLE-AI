@@ -92,11 +92,14 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
       console.error('Chat error:', err);
       setError(err.response?.data?.error || 'Failed to send message');
       
+      const err402 = err.response?.status === 402;
+      const errData = err.response?.data;
+      const content = err402
+        ? (errData?.message || errData?.error || 'Insufficient balance. Deposit at least $1 worth of tokens to use chat.')
+        : 'Error: Could not reach the AI. Please try again.';
       const errorMessage: Message = {
         role: 'assistant',
-        content: err.response?.status === 402
-          ? 'Insufficient tokens. Please deposit more tokens to continue.'
-          : 'Error: Could not reach the AI. Please try again.',
+        content,
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, errorMessage]);
