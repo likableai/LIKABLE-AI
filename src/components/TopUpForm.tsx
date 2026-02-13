@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync, createTransferCheckedInstruction, createAssociatedTokenAccountIdempotentInstruction } from '@solana/spl-token';
+import { getAssociatedTokenAddressSync, createTransferCheckedInstruction } from '@solana/spl-token';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
 import { getTokenConfig, recordDepositPay, recordDeposit } from '@/lib/api';
@@ -105,28 +105,17 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
     try {
       const mintPk = new PublicKey(config.tokenMint);
       const treasuryAtaPk = new PublicKey(config.treasuryAta);
-      const treasuryWalletPk = new PublicKey(config.treasuryWallet);
       const userAta = getAssociatedTokenAddressSync(mintPk, publicKey);
 
-      const tx = new Transaction();
-      tx.add(
-        createAssociatedTokenAccountIdempotentInstruction(
-          publicKey,
-          treasuryAtaPk,
-          treasuryWalletPk,
-          mintPk
-        )
+      const ix = createTransferCheckedInstruction(
+        userAta,
+        mintPk,
+        treasuryAtaPk,
+        publicKey,
+        amountRaw,
+        decimals
       );
-      tx.add(
-        createTransferCheckedInstruction(
-          userAta,
-          mintPk,
-          treasuryAtaPk,
-          publicKey,
-          amountRaw,
-          decimals
-        )
-      );
+      const tx = new Transaction().add(ix);
       const sig = await sendTransaction(tx, connection, { skipPreflight: false });
       setTxHash(sig);
       setMessage({ type: 'success', text: 'Transaction sent. Waiting for confirmation…' });
