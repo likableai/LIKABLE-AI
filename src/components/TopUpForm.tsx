@@ -228,7 +228,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
         txHash: trimmed,
       });
       setMessage({ type: 'success', text: 'Balance credited successfully.' });
-      toast.success(`${amt.toFixed(2)} tokens credited.`);
+      toast.success(`${amt.toFixed(2)} LIKA credited.`);
       setReceiveTxHash('');
       setReceiveAmount('');
       onSuccess?.();
@@ -276,24 +276,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
       {config && (
         <>
           <form onSubmit={handlePayWithWallet} className="space-y-4 mb-4">
-            <p
-              className="text-xs mb-2"
-              style={{
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text-opacity-70)',
-              }}
-            >
-              Pay with wallet
-            </p>
-            <p
-              className="text-xs mb-2"
-              style={{
-                fontFamily: "'Times New Roman', Times, serif",
-                color: 'var(--text-opacity-60)',
-              }}
-            >
-              You pay in <strong>LIKA</strong> (not SOL). Your wallet opens to approve the transfer. A small SOL fee applies for the transaction. After sending, paste the transaction hash below to credit your balance.
-            </p>
             <div>
               <label
                 className="block text-xs mb-1"
@@ -342,9 +324,6 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
           </form>
 
           <div className="mb-4 pt-3 border-t" style={{ borderColor: 'var(--border-opacity-10)' }}>
-            <p className="text-xs mb-2" style={{ color: 'var(--text-opacity-60)' }}>
-              Already sent LIKA? Paste the transaction hash to verify and credit.
-            </p>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono truncate flex-1" style={{ color: 'var(--text-opacity-70)' }}>
                 {truncateAddress(config.treasuryAta)}
@@ -377,7 +356,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                 type="text"
                 value={txHash}
                 onChange={(e) => setTxHash(e.target.value)}
-                placeholder="Paste tx signature after sending"
+                placeholder="Tx hash"
                 className="input w-full"
                 style={{ fontFamily: "'Times New Roman', Times, serif" }}
               />
@@ -429,7 +408,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                 backgroundColor: 'transparent',
               }}
             >
-              <span>I received LIKA into my wallet (e.g. from swap)</span>
+              <span>Received LIKA elsewhere</span>
               {showReceiveElsewhere ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {showReceiveElsewhere && (
@@ -442,7 +421,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                     type="text"
                     value={receiveTxHash}
                     onChange={(e) => setReceiveTxHash(e.target.value)}
-                    placeholder="Paste tx signature"
+                    placeholder="Tx hash"
                     className="input w-full"
                     style={{ fontFamily: "'Times New Roman', Times, serif" }}
                   />
@@ -457,7 +436,7 @@ export const TopUpForm: React.FC<TopUpFormProps> = ({
                     step="any"
                     value={receiveAmount}
                     onChange={(e) => setReceiveAmount(e.target.value)}
-                    placeholder="Tokens received"
+                    placeholder="LIKA"
                     className="input w-full"
                     style={{ fontFamily: "'Times New Roman', Times, serif" }}
                   />

@@ -74,7 +74,7 @@ export default function DashboardPage() {
       const res = await scanDeposits(publicKey.toString());
       if (res.credited.length > 0) {
         const total = res.credited.reduce((s, c) => s + c.amount, 0);
-        toast.success(`${total.toFixed(2)} tokens credited.`);
+        toast.success(`${total.toFixed(2)} LIKA credited.`);
         setRefreshTrigger((n) => n + 1);
       }
     } catch (e: any) {
@@ -124,8 +124,8 @@ export default function DashboardPage() {
       <AppLayout>
         <div className="container-padding flex flex-col items-center justify-center page-title-area" style={{ minHeight: '60vh' }}>
           <h1 className="page-title mb-4">Dashboard</h1>
-          <p className="page-subtitle mb-6 text-center max-w-md">
-            Connect your wallet to view balance, usage, and top up.
+          <p className="page-subtitle mb-6 text-center max-w-md" style={{ color: 'var(--text-opacity-70)' }}>
+            Connect wallet to view balance and top up.
           </p>
           <WalletButton />
         </div>
@@ -175,7 +175,7 @@ export default function DashboardPage() {
                     className="text-sm"
                     style={{ color: 'var(--text-opacity-60)' }}
                   >
-                    tokens
+                    LIKA
                   </span>
                 </p>
                 <p 
@@ -189,7 +189,7 @@ export default function DashboardPage() {
                   className="mt-2 text-xs"
                   style={{ color: 'var(--text-opacity-50)' }}
                 >
-                  Deposited: {balance.depositedAmount.toFixed(2)} tokens
+                  Deposited: {balance.depositedAmount.toFixed(2)} LIKA
                 </p>
               </>
             ) : (
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 style={{ borderColor: 'var(--border-opacity-20)', backgroundColor: 'var(--bg-opacity-5)' }}
                 aria-label="Auto-detect deposits"
               />
-              <span className="section-title text-sm">Auto-detect deposits</span>
+              <span className="section-title text-sm">Auto-detect</span>
             </label>
             <button
               type="button"
@@ -232,14 +232,14 @@ export default function DashboardPage() {
               disabled={scanning}
               className="btn-secondary flex items-center gap-2 text-sm"
               style={{ gap: 'var(--space-2)' }}
-              aria-label="Check for deposits"
+              aria-label="Scan for deposits"
             >
               {scanning ? (
                 <Loader2 className="animate-spin" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               ) : (
                 <Search style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
               )}
-              Check for deposits
+              Scan
             </button>
           </div>
           <TopUpForm

@@ -25,7 +25,7 @@ export const UsageSummary: React.FC<UsageSummaryProps> = ({
           color: 'var(--text-opacity-90)'
         }}
       >
-        Tokens used
+        LIKA used
       </p>
       <p 
         className="mt-1 text-lg font-normal"
@@ -39,7 +39,7 @@ export const UsageSummary: React.FC<UsageSummaryProps> = ({
           className="ml-1.5 text-sm"
           style={{ color: 'var(--text-opacity-60)' }}
         >
-          tokens
+          LIKA
         </span>
       </p>
       {usdValue > 0 && (

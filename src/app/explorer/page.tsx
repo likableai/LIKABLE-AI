@@ -12,8 +12,8 @@ export default function ExplorerPage() {
           <h1 className="page-title mb-4 tracking-tight">
             Token <span className="text-accent">Explorer</span>
           </h1>
-          <p className="page-subtitle text-lg">
-            Search and analyze any token on the Solana network using Jupiter Ultra.
+          <p className="page-subtitle text-sm" style={{ color: 'var(--text-opacity-70)' }}>
+            Search tokens on Solana (Jupiter).
           </p>
         </header>
         <main>
