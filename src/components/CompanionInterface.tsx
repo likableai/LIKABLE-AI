@@ -11,7 +11,7 @@ import { SettingsDrawer } from './SettingsDrawer';
 import { AppLayout } from './AppLayout';
 import { TokenBalance } from './TokenBalance';
 import { WalletButton } from './WalletButton';
-import { Mic, Square, Loader2, Radio } from 'lucide-react';
+import { Mic, Square, Loader2, Radio, MessageCircle } from 'lucide-react';
 import { LoadingSpinner } from './LoadingSpinner';
 import { VoiceOption } from './VoiceSelectorDropdown';
 import { ModelOption } from './ModelSelectorDropdown';
@@ -235,15 +235,36 @@ export const CompanionInterface: React.FC = () => {
                       <span>Disconnect</span>
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => setIsTextChatOpen(true)}
+                    className="w-full btn-secondary flex items-center justify-center"
+                    style={{ gap: 'var(--space-2)', fontSize: 'var(--font-sm)' }}
+                    aria-label="Switch to text chat"
+                  >
+                    <MessageCircle style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+                    <span>Switch to text chat</span>
+                  </button>
                 </div>
               ) : (
                 <div
-                  className="card text-center"
-                  style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)' }}
+                  className="card text-center flex flex-col"
+                  style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)', gap: 'var(--space-4)' }}
                 >
                   <p className="page-subtitle text-sm">
                     Connect your wallet to start using the voice companion
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsTextChatOpen(true)}
+                    className="text-sm nav-link opacity-80 hover:opacity-100 transition-opacity flex items-center justify-center mx-auto"
+                    style={{ gap: 'var(--space-2)' }}
+                    aria-label="Switch to text chat"
+                  >
+                    <MessageCircle style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+                    <span>Switch to text chat</span>
+                  </button>
                 </div>
               )}
 
