@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
-import { sendChatMessage, ChatMessageRequest } from '@/lib/api';
+import { sendChatMessage, ChatMessageRequest, resolveMemeFileUrl } from '@/lib/api';
 import { X, Send, Loader2 } from 'lucide-react';
 import { SkeletonLoader } from './SkeletonLoader';
 
@@ -13,6 +13,8 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: number;
+  memeUrl?: string;
+  memeFormat?: string;
 }
 
 interface TextChatDrawerProps {
@@ -77,6 +79,8 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
         role: 'assistant',
         content: response.reply,
         timestamp: Date.now(),
+        memeUrl: response.memeUrl,
+        memeFormat: response.memeFormat,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -176,10 +180,37 @@ export const TextChatDrawer: React.FC<TextChatDrawerProps> = ({ isOpen, onClose 
                   backgroundColor: msg.role === 'user' ? 'var(--accent-primary)' : undefined,
                   color: msg.role === 'user' ? 'var(--bg)' : 'var(--text)',
                   padding: msg.role === 'user' ? 'var(--space-2-5) var(--space-4)' : undefined,
-                  maxWidth: 'var(--max-width-message)',
+                  maxWidth: msg.memeUrl ? 'min(360px, 100%)' : 'var(--max-width-message)',
                 }}
               >
                 <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                {msg.memeUrl && (
+                  <div className="mt-3 rounded-xl overflow-hidden" style={{ maxWidth: 320 }}>
+                    {msg.memeFormat === 'video' ? (
+                      <video
+                        src={resolveMemeFileUrl(msg.memeUrl)}
+                        controls
+                        playsInline
+                        className="w-full"
+                        style={{ maxHeight: 240 }}
+                      />
+                    ) : (
+                      <a
+                        href={resolveMemeFileUrl(msg.memeUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <img
+                          src={resolveMemeFileUrl(msg.memeUrl)}
+                          alt="Generated meme"
+                          className="w-full rounded-lg"
+                          style={{ maxHeight: 320, objectFit: 'contain' }}
+                        />
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
               <span className="text-muted text-xs mt-1 px-1">
                 {new Date(msg.timestamp).toLocaleTimeString([], {

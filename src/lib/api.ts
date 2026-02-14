@@ -141,6 +141,8 @@ export interface ChatMessageRequest {
 
 export interface ChatMessageResponse {
   reply: string;
+  memeUrl?: string;
+  memeFormat?: string;
   tokenInfo: {
     cost: number;
     costUsd: number;

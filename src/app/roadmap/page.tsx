@@ -15,7 +15,7 @@ const QUARTERS = [
 const DEFLATIONARY = [
   { pct: '50%', label: 'Burned (until 100M $LIKA)' },
   { pct: '25%', label: 'Platform & servers' },
-  { pct: '15%', label: 'Community & listing' },
+  { pct: '15%', label: 'Community & Market' },
   { pct: '10%', label: 'Team' },
 ];
 
@@ -60,7 +60,7 @@ export default function RoadmapPage() {
         </section>
 
         <section className="section-spacing">
-          <h2 className="section-title mb-3 text-sm">$LIKA allocation</h2>
+          <h2 className="section-title mb-3 text-sm">$LIKA platform revenue distribution</h2>
           <div className="card grid gap-3 grid-cols-2 sm:grid-cols-4" style={{ padding: 'var(--space-3)' }}>
             {DEFLATIONARY.map((row, i) => (
               <div key={i} className="text-center p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-opacity-5)' }}>
