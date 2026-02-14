@@ -20,6 +20,8 @@ const DEFLATIONARY = [
 ];
 
 const PROGRESS: { date: string; text: string }[] = [
+  { date: 'Feb 14', text: 'Roadmap update & recent updates.' },
+  { date: 'Feb 12', text: '$LIKA token officially launched.' },
   { date: 'Feb 6', text: 'Meme Studio added.' },
   { date: 'Feb 4', text: '$LIKA confirmed as official currency.' },
   { date: 'Feb 1', text: 'v1.0 launched.' },
